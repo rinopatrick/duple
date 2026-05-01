@@ -32,7 +32,8 @@
   {/if}
   <div class="flex flex-col flex-1 overflow-hidden">
     <TopBar />
-    <main class="flex-1 overflow-y-auto p-6">
+    <main class="flex-1 overflow-y-auto p-4 md:p-6">
+      <div class="animate-in" style="animation: fadeSlideIn 0.2s ease-out">
       {#if route === 'dashboard'}
         <Dashboard />
       {:else if route === 'makanan'}
@@ -72,6 +73,7 @@
       {:else if route === 'settings'}
         <SettingsPage />
       {/if}
+      </div>
     </main>
   </div>
 </div>

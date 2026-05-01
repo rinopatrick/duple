@@ -179,6 +179,23 @@
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Skeleton pulse */
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+.animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+/* w-4.5 / h-4.5 utility */
+.w-4\\.5 { width: 1.125rem; }
+.h-4\\.5 { height: 1.125rem; }
+
+/* w-3.5 / h-3.5 utility */
+.w-3\\.5 { width: 0.875rem; }
+.h-3\\.5 { height: 0.875rem; }
+
 /* ─── Base overrides ─── */
 body { background: var(--bg); color: var(--text); }
 .bg-base-100 { background: var(--bg-card); }
