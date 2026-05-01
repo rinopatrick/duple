@@ -123,7 +123,7 @@
 
 <div class="space-y-6">
   <div class="flex items-center justify-between">
-    <h1 class="text-2xl font-bold">🩸 Health Tracker</h1>
+    <h1 class="text-2xl font-bold">🩸 Siklus Haid</h1>
     <div class="flex gap-1">
       <button onclick={goToday} class="btn btn-sm btn-ghost">Hari Ini</button>
     </div>

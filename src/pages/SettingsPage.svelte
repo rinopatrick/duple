@@ -126,7 +126,7 @@
       <div class="space-y-3">
         <div class="flex items-center justify-between">
           <div>
-            <p class="font-medium">🩸 Health Tracker</p>
+            <p class="font-medium">🩸 Siklus Haid Tracker</p>
             <p class="text-xs text-base-content/50">Kalender siklus haid, daily log, prediksi. Nonaktifkan jika tidak diperlukan.</p>
           </div>
           <input type="checkbox" class="toggle-lg" checked={getFeature('siklus')}

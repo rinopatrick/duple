@@ -108,6 +108,21 @@ class DexieDatabase {
     const table = this.extractTable(sql);
     const now = new Date().toISOString();
 
+    // INSERT OR REPLACE — must check before INSERT since it also starts with 'INSERT'
+    if (upper.startsWith('INSERT OR REPLACE')) {
+      if (table === 'haid_harian') {
+        const existing = await this.dexie.table(table).where('tanggal').equals(params[0]).first();
+        if (existing) {
+          await this.dexie.table(table).update(existing.id, { status: params[1], flow_level: params[2] });
+        } else {
+          await this.dexie.table(table).add({ tanggal: params[0], status: params[1], flow_level: params[2], created_at: now });
+        }
+      } else if (table === 'settings') {
+        await this.dexie.table('settings').put({ key: params[0], value: params[1], updated_at: now });
+      }
+      return { lastInsertId: 0 };
+    }
+
     if (upper.startsWith('INSERT')) {
       const data: any = {};
 
