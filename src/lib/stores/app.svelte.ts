@@ -11,6 +11,8 @@ export type Route =
   | 'trigger'
   | 'orang'
   | 'date-generator'
+  | 'stats'
+  | 'apology'
   | 'settings';
 
 export const NAV_ITEMS: { route: Route; label: string; icon: string }[] = [
@@ -25,6 +27,8 @@ export const NAV_ITEMS: { route: Route; label: string; icon: string }[] = [
   { route: 'momen', label: 'Momen Spesial', icon: '❤️' },
   { route: 'wishlist', label: 'Wishlist', icon: '🎁' },
   { route: 'trigger', label: 'Trigger Words', icon: '⚡' },
+  { route: 'apology', label: 'Apology Playbook', icon: '🛡️' },
+  { route: 'stats', label: 'Stats & Insights', icon: '📊' },
   { route: 'orang', label: 'Orang Penting', icon: '👥' },
   { route: 'settings', label: 'Settings', icon: '⚙️' },
 ];

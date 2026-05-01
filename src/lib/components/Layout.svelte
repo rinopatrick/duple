@@ -13,6 +13,8 @@
   import TriggerPage from '../../pages/TriggerPage.svelte';
   import OrangPage from '../../pages/OrangPage.svelte';
   import DateGeneratorPage from '../../pages/DateGeneratorPage.svelte';
+  import StatsPage from '../../pages/StatsPage.svelte';
+  import ApologyPage from '../../pages/ApologyPage.svelte';
   import SettingsPage from '../../pages/SettingsPage.svelte';
   import { getRoute, getSidebarOpen } from '../stores/app.svelte';
 
@@ -51,6 +53,10 @@
         <OrangPage />
       {:else if route === 'date-generator'}
         <DateGeneratorPage />
+      {:else if route === 'stats'}
+        <StatsPage />
+      {:else if route === 'apology'}
+        <ApologyPage />
       {:else if route === 'settings'}
         <SettingsPage />
       {/if}
