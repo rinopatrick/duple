@@ -1,0 +1,315 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #3b82f6;
+  --color-primary-content: #ffffff;
+  --color-secondary: #10b981;
+  --color-secondary-content: #ffffff;
+  --color-accent: #f59e0b;
+  --color-accent-content: #ffffff;
+  --color-error: #ef4444;
+  --color-error-content: #ffffff;
+  --color-success: #22c55e;
+  --color-success-content: #ffffff;
+  --color-warning: #f59e0b;
+  --color-warning-content: #ffffff;
+  --color-info: #3b82f6;
+  --color-info-content: #ffffff;
+  --color-neutral: #6b7280;
+  --color-neutral-content: #ffffff;
+  --color-base-100: #ffffff;
+  --color-base-200: #f3f4f6;
+  --color-base-300: #e5e7eb;
+  --color-base-content: #1f2937;
+}
+
+[data-theme="dark"] {
+  --color-base-100: #1f2937;
+  --color-base-200: #111827;
+  --color-base-300: #374151;
+  --color-base-content: #f9fafb;
+}
+
+.btn {
+  @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer border-none text-sm;
+}
+
+.btn-primary {
+  @apply bg-primary text-primary-content hover:opacity-90;
+}
+
+.btn-secondary {
+  @apply bg-secondary text-secondary-content hover:opacity-90;
+}
+
+.btn-accent {
+  @apply bg-accent text-accent-content hover:opacity-90;
+}
+
+.btn-ghost {
+  @apply bg-transparent hover:bg-base-200 text-base-content;
+}
+
+.btn-outline {
+  @apply bg-transparent border border-base-300 text-base-content hover:bg-base-200;
+}
+
+.btn-error {
+  @apply bg-error text-error-content hover:opacity-90;
+}
+
+.btn-success {
+  @apply bg-success text-success-content hover:opacity-90;
+}
+
+.btn-warning {
+  @apply bg-warning text-warning-content hover:opacity-90;
+}
+
+.btn-info {
+  @apply bg-info text-info-content hover:opacity-90;
+}
+
+.btn-sm {
+  @apply px-3 py-1.5 text-xs;
+}
+
+.btn-xs {
+  @apply px-2 py-1 text-xs;
+}
+
+.btn-lg {
+  @apply px-6 py-3 text-lg;
+}
+
+.btn-sm .btn-square {
+  @apply p-1.5;
+}
+
+.btn-square {
+  @apply p-2;
+}
+
+.btn:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+.card {
+  @apply bg-base-100 rounded-lg;
+}
+
+.card-body {
+  @apply p-4;
+}
+
+.card-title {
+  @apply text-lg font-bold mb-2;
+}
+
+.badge {
+  @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium;
+}
+
+.badge-sm {
+  @apply px-1.5 py-0 text-[10px];
+}
+
+.badge-xs {
+  @apply px-1 py-0 text-[9px];
+}
+
+.badge-lg {
+  @apply px-3 py-1 text-sm;
+}
+
+.badge-primary {
+  @apply bg-primary text-primary-content;
+}
+
+.badge-ghost {
+  @apply bg-base-200 text-base-content;
+}
+
+.badge-outline {
+  @apply border border-base-300 text-base-content;
+}
+
+.badge-error {
+  @apply bg-error text-error-content;
+}
+
+.badge-info {
+  @apply bg-info text-info-content;
+}
+
+.badge-warning {
+  @apply bg-warning text-warning-content;
+}
+
+.badge-success {
+  @apply bg-success text-success-content;
+}
+
+.badge-accent {
+  @apply bg-accent text-accent-content;
+}
+
+.badge-secondary {
+  @apply bg-secondary text-secondary-content;
+}
+
+.alert {
+  @apply p-4 rounded-lg;
+}
+
+.alert-info {
+  @apply bg-info/10 text-info border border-info/30;
+}
+
+.alert-warning {
+  @apply bg-warning/10 text-warning border border-warning/30;
+}
+
+.alert-error {
+  @apply bg-error/10 text-error border border-error/30;
+}
+
+.alert-success {
+  @apply bg-success/10 text-success border border-success/30;
+}
+
+.input {
+  @apply w-full px-3 py-2 rounded-lg bg-base-100 border border-base-300 text-base-content outline-none transition-colors focus:border-primary;
+}
+
+.input-bordered {
+  @apply border-base-300;
+}
+
+.input-error {
+  @apply border-error focus:border-error;
+}
+
+.input-success {
+  @apply border-success focus:border-success;
+}
+
+.textarea {
+  @apply w-full px-3 py-2 rounded-lg bg-base-100 border border-base-300 text-base-content outline-none transition-colors focus:border-primary resize-y min-h-[80px];
+}
+
+.textarea-bordered {
+  @apply border-base-300;
+}
+
+.select {
+  @apply w-full px-3 py-2 rounded-lg bg-base-100 border border-base-300 text-base-content outline-none transition-colors focus:border-primary appearance-none cursor-pointer;
+}
+
+.select-bordered {
+  @apply border-base-300;
+}
+
+.form-control {
+  @apply mb-3;
+}
+
+.label {
+  @apply flex justify-between items-center py-1;
+}
+
+.label-text {
+  @apply text-sm font-medium text-base-content;
+}
+
+.tabs {
+  @apply flex gap-1 mb-4;
+}
+
+.tabs-boxed {
+  @apply bg-base-200 p-1 rounded-lg inline-flex;
+}
+
+.tab {
+  @apply px-4 py-2 rounded-md text-sm font-medium cursor-pointer transition-colors;
+}
+
+.tab-active {
+  @apply bg-base-100 shadow;
+}
+
+.tab:not(.tab-active) {
+  @apply text-base-content/60 hover:text-base-content;
+}
+
+.range {
+  @apply w-full h-2 rounded-full appearance-none bg-base-200 cursor-pointer;
+}
+
+.range-primary {
+  accent-color: var(--color-primary);
+}
+
+.range-error {
+  accent-color: var(--color-error);
+}
+
+.toggle {
+  @apply relative w-12 h-6 rounded-full bg-base-300 cursor-pointer appearance-none transition-colors;
+}
+
+.toggle:checked {
+  @apply bg-primary;
+}
+
+.toggle-primary:checked {
+  @apply bg-primary;
+}
+
+.stats {
+  @apply bg-base-100 rounded-lg overflow-hidden;
+}
+
+.stats-vertical {
+  @apply flex flex-col divide-y divide-base-300;
+}
+
+.stat {
+  @apply p-4;
+}
+
+.stat-title {
+  @apply text-sm text-base-content/60;
+}
+
+.stat-value {
+  @apply text-2xl font-bold;
+}
+
+.stat-desc {
+  @apply text-xs text-base-content/50;
+}
+
+.avatar.placeholder > div {
+  @apply bg-neutral text-neutral-content rounded-full w-10 h-10 flex items-center justify-center;
+}
+
+.loading-spinner {
+  @apply inline-block w-5 h-5 border-2 border-base-300 border-t-primary rounded-full animate-spin;
+}
+
+.loading-sm {
+  @apply w-4 h-4;
+}
+
+.loading-lg {
+  @apply w-8 h-8 border-4;
+}
+
+.menu {
+  @apply list-none p-0;
+}
+
+.divider {
+  @apply h-px bg-base-300 my-4;
+}
