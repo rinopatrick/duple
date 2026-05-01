@@ -3,6 +3,7 @@
   import type { Route } from '../stores/app.svelte';
   import * as Icons from 'lucide-svelte';
   import { ChevronDown, MoreHorizontal } from 'lucide-svelte';
+  import { getLocale, t } from '../i18n/index.svelte';
 
   const currentRoute = $derived(getRoute());
   let showMore = $state(false);
@@ -16,6 +17,10 @@
       if (item.route === 'siklus') return getFeature('siklus');
       return true;
     });
+  }
+
+  function label(item: { label: string; route: Route }): string {
+    return (t().nav as any)[item.route] || item.label;
   }
 
   const mainItems = $derived(filter(NAV_MAIN));

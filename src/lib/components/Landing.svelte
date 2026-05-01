@@ -1,6 +1,6 @@
 <script lang="ts">
   import { UtensilsCrossed, Calendar, Lightbulb, Lock } from 'lucide-svelte';
-  import { t } from '../i18n';
+  import { t } from '../i18n/index.svelte';
 
   let { onStart }: { onStart: () => void } = $props();
   const tr = $derived(t());

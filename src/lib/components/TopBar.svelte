@@ -1,6 +1,6 @@
 <script lang="ts">
   import { toggleSidebar, toggleTheme, getTheme } from '../stores/app.svelte';
-  import { getLocale, setLocale, type Locale } from '../i18n';
+  import { getLocale, setLocale, type Locale } from '../i18n/index.svelte';
   import { Moon, Sun, PanelLeft, Globe, Search, X } from 'lucide-svelte';
 
   const theme = $derived(getTheme());

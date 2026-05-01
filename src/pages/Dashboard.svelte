@@ -14,7 +14,7 @@
   import { formatDate, today, daysBetween } from '../lib/utils/date';
   import dayjs from 'dayjs';
   import { Bell, Heart } from 'lucide-svelte';
-  import { t } from '../lib/i18n';
+  import { t } from '../lib/i18n/index.svelte';
 
   let tr = $derived(t());
 
