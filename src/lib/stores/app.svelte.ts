@@ -19,56 +19,29 @@ export type Route =
   | 'ai'
   | 'settings';
 
-export const NAV_GROUPS: { label: string; items: { route: Route; label: string; icon: string }[] }[] = [
-  {
-    label: 'Main',
-    items: [
-      { route: 'dashboard', label: 'Dashboard', icon: 'LayoutDashboard' },
-      { route: 'stats', label: 'Stats & Charts', icon: 'BarChart3' },
-    ]
-  },
-  {
-    label: 'Food',
-    items: [
-      { route: 'makanan', label: 'Makanan Favorit', icon: 'UtensilsCrossed' },
-      { route: 'log-makanan', label: 'Log Makanan', icon: 'ClipboardList' },
-    ]
-  },
-  {
-    label: 'Relationship',
-    items: [
-      { route: 'mood', label: 'Mood Tracker', icon: 'Smile' },
-      { route: 'siklus', label: 'Siklus Haid', icon: 'CalendarHeart' },
-      { route: 'rekomendasi', label: 'Rekomendasi', icon: 'Lightbulb' },
-      { route: 'apology', label: 'Apology Playbook', icon: 'Shield' },
-      { route: 'quiz', label: 'Love Quiz', icon: 'HeartHandshake' },
-      { route: 'health', label: 'Health Check', icon: 'Activity' },
-    ]
-  },
-  {
-    label: 'Plans',
-    items: [
-      { route: 'date-generator', label: 'Date Generator', icon: 'Dices' },
-      { route: 'rencana', label: 'Rencana Tempat', icon: 'MapPin' },
-      { route: 'momen', label: 'Momen Spesial', icon: 'Heart' },
-    ]
-  },
-  {
-    label: 'Tracking',
-    items: [
-      { route: 'wishlist', label: 'Wishlist', icon: 'Gift' },
-      { route: 'trigger', label: 'Trigger Words', icon: 'AlertTriangle' },
-      { route: 'orang', label: 'Orang Penting', icon: 'Users' },
-    ]
-  },
-  {
-    label: 'Tools',
-    items: [
-      { route: 'calendar', label: 'Calendar Export', icon: 'Calendar' },
-      { route: 'ai', label: 'AI Advisor', icon: 'Bot' },
-      { route: 'settings', label: 'Settings', icon: 'Settings' },
-    ]
-  },
+export const NAV_MAIN: { route: Route; label: string; icon: string }[] = [
+  { route: 'dashboard', label: 'Dashboard', icon: 'LayoutDashboard' },
+  { route: 'makanan', label: 'Makanan', icon: 'UtensilsCrossed' },
+  { route: 'log-makanan', label: 'Log Makanan', icon: 'ClipboardList' },
+  { route: 'date-generator', label: 'Date Generator', icon: 'Dices' },
+  { route: 'siklus', label: 'Siklus', icon: 'CalendarHeart' },
+  { route: 'mood', label: 'Mood', icon: 'Smile' },
+  { route: 'rekomendasi', label: 'Rekomendasi', icon: 'Lightbulb' },
+  { route: 'rencana', label: 'Tempat', icon: 'MapPin' },
+];
+
+export const NAV_MORE: { route: Route; label: string; icon: string }[] = [
+  { route: 'momen', label: 'Momen', icon: 'Heart' },
+  { route: 'wishlist', label: 'Wishlist', icon: 'Gift' },
+  { route: 'trigger', label: 'Trigger', icon: 'AlertTriangle' },
+  { route: 'apology', label: 'Apology', icon: 'Shield' },
+  { route: 'quiz', label: 'Love Quiz', icon: 'HeartHandshake' },
+  { route: 'stats', label: 'Stats', icon: 'BarChart3' },
+  { route: 'health', label: 'Health', icon: 'Activity' },
+  { route: 'calendar', label: 'Calendar', icon: 'Calendar' },
+  { route: 'ai', label: 'AI Advisor', icon: 'Bot' },
+  { route: 'orang', label: 'Orang', icon: 'Users' },
+  { route: 'settings', label: 'Settings', icon: 'Settings' },
 ];
 
 let _route: Route = $state('dashboard');

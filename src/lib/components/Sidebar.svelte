@@ -1,78 +1,82 @@
 <script lang="ts">
-  import { setRoute, getRoute, NAV_GROUPS, getFeature } from '../stores/app.svelte';
-  import { getLocale, t } from '../i18n';
+  import { setRoute, getRoute, NAV_MAIN, NAV_MORE, getFeature } from '../stores/app.svelte';
   import type { Route } from '../stores/app.svelte';
   import * as Icons from 'lucide-svelte';
-  import { ChevronDown } from 'lucide-svelte';
+  import { ChevronDown, MoreHorizontal } from 'lucide-svelte';
 
   const currentRoute = $derived(getRoute());
-  let expanded = $state<Record<string, boolean>>({ Main: true });
-
-  function toggleGroup(label: string) {
-    expanded = { ...expanded, [label]: !expanded[label] };
-  }
-
-  function isExpanded(label: string): boolean {
-    return expanded[label] !== false;
-  }
-
-  function label(item: { label: string; route: Route }): string {
-    const translations = t().nav;
-    return (translations as any)[item.route] || item.label;
-  }
+  let showMore = $state(false);
 
   function iconComponent(name: string): any {
     return (Icons as any)[name] || Icons.HelpCircle;
   }
 
-  function filterItems(items: typeof NAV_GROUPS[number]['items']) {
+  function filter(items: typeof NAV_MAIN) {
     return items.filter(item => {
       if (item.route === 'siklus') return getFeature('siklus');
       return true;
     });
   }
 
+  const mainItems = $derived(filter(NAV_MAIN));
+  const moreItems = $derived(filter(NAV_MORE as any));
+
   function navigate(route: Route) { setRoute(route); }
 </script>
 
 <aside class="w-56 border-r flex flex-col h-full text-sm" style="background: var(--bg-card); border-color: var(--border)">
-  <div class="p-3 border-b" style="border-color: var(--border)">
-    <div class="flex items-center gap-2">
-      <div class="w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0" style="background: var(--primary)">
-        <span class="text-white font-bold text-xs">D</span>
+  <div class="p-3.5 border-b" style="border-color: var(--border)">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background: var(--primary)">
+        <span class="text-white font-bold text-base">D</span>
       </div>
-      <span class="font-bold" style="color: var(--text)">Duple</span>
+      <div>
+        <span class="font-bold text-base" style="color: var(--text)">Duple</span>
+      </div>
     </div>
   </div>
 
-  <nav class="flex-1 overflow-y-auto py-2">
-    {#each NAV_GROUPS as group}
-      {@const visibleItems = filterItems(group.items)}
-      {#if visibleItems.length > 0}
-        <button
-          onclick={() => toggleGroup(group.label)}
-          class="w-full flex items-center gap-1 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider"
-          style="color: var(--text-soft)"
-        >
-          <ChevronDown class="w-3 h-3 transition-transform duration-150" style="transform: {isExpanded(group.label) ? 'rotate(0deg)' : 'rotate(-90deg)'}" />
-          {group.label}
-        </button>
-        {#if isExpanded(group.label)}
-          <div class="space-y-0.5 px-1.5 mb-1">
-            {#each visibleItems as item}
-              {@const IconComp = iconComponent(item.icon)}
-              <button
-                onclick={() => navigate(item.route)}
-                class="w-full text-left px-2.5 py-1.5 rounded-md flex items-center gap-2 transition-all duration-150 active:scale-[0.97] {currentRoute !== item.route ? 'hover:bg-primary/10' : ''} {currentRoute === item.route ? 'font-medium' : ''}"
-                style={currentRoute === item.route ? 'background: var(--primary); color: var(--primary-text)' : ''}
-              >
-                <IconComp class="w-4 h-4 flex-shrink-0" />
-                <span class="truncate text-xs">{label(item)}</span>
-              </button>
-            {/each}
-          </div>
-        {/if}
-      {/if}
+  <nav class="flex-1 overflow-y-auto py-2 space-y-0.5 px-2">
+    {#each mainItems as item}
+      {@const IconComp = iconComponent(item.icon)}
+      <button
+        onclick={() => navigate(item.route)}
+        class="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-all duration-150 active:scale-[0.97] {currentRoute !== item.route ? 'hover:bg-primary/10 hover:text-primary' : ''}"
+        style={currentRoute === item.route ? 'background: var(--primary); color: var(--primary-text)' : 'color: var(--text)'}
+      >
+        <IconComp class="w-4.5 h-4.5 flex-shrink-0" />
+        <span class="text-sm font-medium">{item.label}</span>
+      </button>
     {/each}
+
+    <div class="border-t my-2" style="border-color: var(--border)"></div>
+
+    <button
+      onclick={() => showMore = !showMore}
+      class="w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all hover:bg-primary/10"
+      style="color: var(--text-muted)"
+    >
+      <span class="flex items-center gap-2.5 text-xs font-medium uppercase tracking-wider">
+        <MoreHorizontal class="w-4 h-4" />
+        More
+      </span>
+      <ChevronDown class="w-3.5 h-3.5 transition-transform duration-150" style="transform: {showMore ? 'rotate(0deg)' : 'rotate(-90deg)'}" />
+    </button>
+
+    {#if showMore}
+      <div class="space-y-0.5 pb-1">
+        {#each moreItems as item}
+          {@const IconComp = iconComponent(item.icon)}
+          <button
+            onclick={() => navigate(item.route)}
+            class="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg transition-all duration-150 active:scale-[0.97] {currentRoute !== item.route ? 'hover:bg-primary/5' : ''}"
+            style={currentRoute === item.route ? 'background: var(--primary); color: var(--primary-text)' : 'color: var(--text)'}
+          >
+            <IconComp class="w-4 h-4 flex-shrink-0 opacity-70" />
+            <span class="text-xs">{item.label}</span>
+          </button>
+        {/each}
+      </div>
+    {/if}
   </nav>
 </aside>
