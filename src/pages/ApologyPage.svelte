@@ -4,14 +4,20 @@
   import { setRoute } from '../lib/stores/app.svelte';
 
   let triggers: TriggerWord[] = $state([]);
-  let activeScenario = $state<'pms' | 'ngambek' | 'takut' | 'random'>('ngambek');
+  let activeScenario: 'pms' | 'ngambek' | 'takut' | 'random' = $state('ngambek');
   let loaded = $state(false);
+  let error = $state('');
 
   $effect(() => { load(); });
 
   async function load() {
-    triggers = await getAllTriggerWords();
-    loaded = true;
+    try {
+      triggers = await getAllTriggerWords();
+      loaded = true;
+    } catch (e) {
+      error = String(e);
+      loaded = true;
+    }
   }
 
   const SCENARIOS = [
@@ -25,16 +31,12 @@
     'ngambek': 'ngambek', 'pms': 'pms', 'takut': 'emosi', 'random': 'umum'
   };
 
-  const getPlaybook = $derived(() => {
+  function getPlaybook() {
     const label = scenarioLabels[activeScenario] || 'umum';
     const relevant = triggers.filter(t => t.kategori === label || t.kategori === 'umum');
-    const tips: string[] = [];
-    if (relevant.length > 0) {
-      tips.push(...relevant.filter(t => t.alternatif_aman).map(t => t.alternatif_aman));
-    }
     const current = SCENARIOS.find(s => s.key === activeScenario)!;
-    return { scenario: current, triggers: relevant, tips };
-  });
+    return { scenario: current, triggers: relevant };
+  }
 </script>
 
 <div class="space-y-6">
@@ -53,8 +55,10 @@
 
   {#if !loaded}
     <div class="flex justify-center"><span class="loading loading-spinner"></span></div>
+  {:else if error}
+    <div class="alert alert-error">{error}</div>
   {:else}
-    {@const pb = getPlaybook}
+    {@const pb = getPlaybook()}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <div class="space-y-4">
         <div class="card bg-base-100 shadow border-l-4" style="border-left-color: var(--primary)">
