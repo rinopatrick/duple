@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getAllHaidHarian, setHaidHarian, type HaidHarian } from '../lib/db/haid_harian';
+  import { getAllHaidHarian, setHaidHarian, deleteHaidHarian, type HaidHarian } from '../lib/db/haid_harian';
   import { getLastSiklus } from '../lib/db/siklus';
   import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-svelte';
   import { formatDate, today } from '../lib/utils/date';
@@ -8,6 +8,7 @@
   let currentMonth = $state(dayjs().format('YYYY-MM'));
   let haidMap = $state<Map<string, HaidHarian>>(new Map());
   let loaded = $state(false);
+  let processing = $state(false);
   let activeDay: string | null = $state(null);
 
   $effect(() => { loadMonth(); });
@@ -38,20 +39,23 @@
   }
 
   async function toggleDay(dateStr: string) {
-    activeDay = dateStr;
+    if (processing) return;
     const existing = haidMap.get(dateStr);
-    const todayStr = today();
+    if (dateStr > today()) return;
 
-    if (dateStr > todayStr) return;
-
-    if (!existing) {
-      await setHaidHarian(dateStr, 'haid', 3);
-    } else if (existing.status === 'haid') {
-      await setHaidHarian(dateStr, 'bersih', 0);
-    } else {
-      await setHaidHarian(dateStr, 'tidak_diketahui', 0);
+    processing = true;
+    try {
+      if (!existing) {
+        await setHaidHarian(dateStr, 'haid', 3);
+      } else if (existing.status === 'haid') {
+        await setHaidHarian(dateStr, 'bersih', 0);
+      } else {
+        await deleteHaidHarian(dateStr);
+      }
+      await loadMonth();
+    } finally {
+      processing = false;
     }
-    await loadMonth();
   }
 
   async function markRange(start: string, end: string, status: string) {
@@ -162,8 +166,8 @@
             {@const dimmed = !isCurrentMonth(day) || isFuture(day)}
             <button
               onclick={() => toggleDay(dateStr)}
-              disabled={isFuture(day)}
-              class="aspect-square rounded-lg flex flex-col items-center justify-center text-xs transition-all cursor-pointer {haidData?.status === 'haid' ? 'bg-error text-white' : haidData?.status === 'bersih' ? 'bg-success text-white' : !haidData ? 'bg-base-200' : ''} {!haidData && !dimmed ? 'hover:bg-base-300' : ''} {isToday(day) ? 'ring-2 ring-primary' : ''} {dimmed ? 'opacity-30' : ''} {isFuture(day) ? 'opacity-50' : ''}">
+              disabled={isFuture(day) || processing}
+              class="aspect-square rounded-lg flex flex-col items-center justify-center text-xs transition-all cursor-pointer {haidData?.status === 'haid' ? 'bg-error text-white' : haidData?.status === 'bersih' ? 'bg-success text-white' : !haidData ? 'bg-base-200' : ''} {!haidData && !dimmed ? 'hover:bg-base-300' : ''} {isToday(day) ? 'ring-2 ring-primary' : ''} {dimmed ? 'opacity-30' : ''} {isFuture(day) ? 'opacity-50' : ''} {processing ? 'opacity-60' : ''}">
               <span class="font-medium">{day.format('D')}</span>
               {#if haidData?.status === 'haid'}
                 <span class="text-[8px]">{'🔴'.repeat(haidData.flow_level || 1)}</span>
