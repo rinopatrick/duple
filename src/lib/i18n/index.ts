@@ -79,6 +79,13 @@ export function setLocale(l: Locale) {
 export function t(): Translations { return _locale === 'en' ? en : id; }
 export function loadLocale() {
   if (typeof localStorage !== 'undefined') {
-    _locale = (localStorage.getItem('duple_locale') as Locale) || 'en';
+    const saved = localStorage.getItem('duple_locale') as Locale;
+    if (saved === 'en' || saved === 'id') {
+      _locale = saved;
+      return;
+    }
+  }
+  if (typeof navigator !== 'undefined' && navigator.language?.startsWith('id')) {
+    _locale = 'id';
   }
 }
