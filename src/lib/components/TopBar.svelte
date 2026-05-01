@@ -1,6 +1,7 @@
 <script lang="ts">
   import { toggleSidebar, toggleTheme, getTheme } from '../stores/app.svelte';
   import { getLocale, setLocale, type Locale } from '../i18n';
+  import { Moon, Sun, PanelLeft, Globe, Search, X } from 'lucide-svelte';
 
   const theme = $derived(getTheme());
   const locale = $derived(getLocale());
@@ -32,7 +33,7 @@
 <div class="h-12 border-b flex items-center justify-between px-3 shrink-0" style="background: var(--bg-card); border-color: var(--border)">
   <div class="flex items-center gap-2">
     <button onclick={toggleSidebar} class="btn btn-ghost btn-sm btn-square" title="Toggle sidebar">
-      <Menu class="w-4 h-4" />
+      <PanelLeft class="w-4 h-4" />
     </button>
     {#if searchOpen}
       <div class="flex items-center gap-2 relative">

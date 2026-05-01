@@ -24,7 +24,7 @@ export const NAV_MAIN: { route: Route; label: string; icon: string }[] = [
   { route: 'makanan', label: 'Makanan', icon: 'UtensilsCrossed' },
   { route: 'log-makanan', label: 'Log Makanan', icon: 'ClipboardList' },
   { route: 'date-generator', label: 'Date Generator', icon: 'Dices' },
-  { route: 'siklus', label: 'Siklus', icon: 'CalendarHeart' },
+  { route: 'siklus', label: 'Siklus', icon: 'CalendarDays' },
   { route: 'mood', label: 'Mood', icon: 'Smile' },
   { route: 'rekomendasi', label: 'Rekomendasi', icon: 'Lightbulb' },
   { route: 'rencana', label: 'Tempat', icon: 'MapPin' },
