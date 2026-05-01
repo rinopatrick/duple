@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { setRoute } from '../lib/stores/app.svelte';
+  import { setRoute, getFeature } from '../lib/stores/app.svelte';
   import { getAllMakanan, getAllRencana, getUpcomingMomen, getAllWishlist } from '../lib/db';
   import { getLastSiklus } from '../lib/db/siklus';
   import { getAllMoodLogs } from '../lib/db/mood';
@@ -117,6 +117,7 @@
           <button onclick={() => setRoute('wishlist')} class="btn btn-sm btn-ghost mt-2">Lihat</button>
         </div>
       </div>
+      {#if getFeature('siklus')}
       <div class="card bg-base-100 shadow">
         <div class="card-body">
           <h3 class="text-sm text-base-content/60">Prediksi Haid Berikutnya</h3>
@@ -124,6 +125,7 @@
           <button onclick={() => setRoute('siklus')} class="btn btn-sm btn-ghost mt-2">Lihat</button>
         </div>
       </div>
+      {/if}
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">

@@ -1,8 +1,17 @@
 <script lang="ts">
-  import { setRoute, getRoute, NAV_ITEMS } from '../stores/app.svelte';
+  import { setRoute, getRoute, NAV_ITEMS, getFeature } from '../stores/app.svelte';
   import type { Route } from '../stores/app.svelte';
 
   const currentRoute = $derived(getRoute());
+
+  function filterItems(items: typeof NAV_ITEMS) {
+    return items.filter(item => {
+      if (item.route === 'siklus') return getFeature('siklus');
+      return true;
+    });
+  }
+
+  const visibleItems = $derived(filterItems(NAV_ITEMS));
 
   function navigate(route: Route) {
     setRoute(route);
@@ -16,7 +25,7 @@
     </h1>
   </div>
   <nav class="flex-1 overflow-y-auto p-2">
-    {#each NAV_ITEMS as item}
+    {#each visibleItems as item}
       <button
         onclick={() => navigate(item.route)}
         class="w-full text-left px-3 py-2 rounded-lg mb-1 flex items-center gap-3 transition-colors"
