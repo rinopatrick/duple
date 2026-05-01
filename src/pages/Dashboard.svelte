@@ -22,29 +22,35 @@
   let moodToday: MoodLog | null = $state(null);
   let rekomendasi: RekomendasiResult | null = $state(null);
   let loaded = $state(false);
+  let error = $state('');
 
   $effect(() => {
     loadDashboard();
   });
 
   async function loadDashboard() {
-    const [makanan, rencana, momens, wishlists, siklus, moods, rec] = await Promise.all([
-      getAllMakanan(),
-      getAllRencana(),
-      getUpcomingMomen(3),
-      getAllWishlist(),
-      getLastSiklus(3),
-      getAllMoodLogs(today()),
-      generateRekomendasi(),
-    ]);
-    makananCount = makanan.length;
-    rencanaWishlist = rencana.filter(r => r.status === 'wishlist').length;
-    upcomingMomens = momens;
-    wishlistActive = wishlists.filter(w => w.status === 'belum_dibeli').length;
-    lastSiklus = siklus;
-    moodToday = moods.length > 0 ? moods[moods.length - 1] : null;
-    rekomendasi = rec;
-    loaded = true;
+    try {
+      const [makanan, rencana, momens, wishlists, siklus, moods, rec] = await Promise.all([
+        getAllMakanan(),
+        getAllRencana(),
+        getUpcomingMomen(3),
+        getAllWishlist(),
+        getLastSiklus(3),
+        getAllMoodLogs(today()),
+        generateRekomendasi().catch(e => { console.error('Rekomendasi engine error:', e); return null; }),
+      ]);
+      makananCount = makanan.length;
+      rencanaWishlist = rencana.filter(r => r.status === 'wishlist').length;
+      upcomingMomens = momens;
+      wishlistActive = wishlists.filter(w => w.status === 'belum_dibeli').length;
+      lastSiklus = siklus;
+      moodToday = moods.length > 0 ? moods[moods.length - 1] : null;
+      rekomendasi = rec;
+      loaded = true;
+    } catch (e) {
+      error = String(e);
+      loaded = true;
+    }
   }
 
   const MOOD_EMOJI: Record<string, string> = {
@@ -75,6 +81,12 @@
 {#if !loaded}
   <div class="flex items-center justify-center h-64">
     <span class="loading loading-spinner loading-lg"></span>
+  </div>
+{:else if error}
+  <div class="alert alert-error">
+    <p class="font-medium">Gagal load dashboard</p>
+    <p class="text-sm font-mono mt-2">{error}</p>
+    <button onclick={() => { error = ''; loaded = false; loadDashboard(); }} class="btn btn-sm btn-ghost mt-2">Coba Lagi</button>
   </div>
 {:else}
   <div class="space-y-6">
