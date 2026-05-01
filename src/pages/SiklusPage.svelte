@@ -1,56 +1,57 @@
 <script lang="ts">
   import { getAllHaidHarian, setHaidHarian, deleteHaidHarian, type HaidHarian } from '../lib/db/haid_harian';
   import { getLastSiklus } from '../lib/db/siklus';
-  import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-svelte';
+  import { ChevronLeft, ChevronRight, Minus, Plus } from 'lucide-svelte';
   import { formatDate, today } from '../lib/utils/date';
   import dayjs from 'dayjs';
 
   let currentMonth = $state(dayjs().format('YYYY-MM'));
-  let haidMap = $state<Map<string, HaidHarian>>(new Map());
+  let haidData: Record<string, HaidHarian> = $state({});
   let loaded = $state(false);
   let processing = $state(false);
-  let activeDay: string | null = $state(null);
+  let selectedDay: string | null = $state(null);
+  let selectedFlow = $state(3);
 
   $effect(() => { loadMonth(); });
 
   async function loadMonth() {
     const data = await getAllHaidHarian(currentMonth);
-    haidMap = new Map(data.map(d => [d.tanggal, d]));
+    const map: Record<string, HaidHarian> = {};
+    for (const d of data) map[d.tanggal] = d;
+    haidData = map;
     loaded = true;
   }
 
   function daysInMonth(): dayjs.Dayjs[] {
     const start = dayjs(currentMonth + '-01');
     const days: dayjs.Dayjs[] = [];
-    const firstDow = start.day(); // 0=Sun
+    const firstDow = start.day();
     const totalDays = start.daysInMonth();
 
-    for (let i = firstDow - 1; i >= 0; i--) {
-      days.push(start.subtract(i + 1, 'day'));
-    }
-    for (let i = 1; i <= totalDays; i++) {
-      days.push(start.date(i));
-    }
+    for (let i = firstDow - 1; i >= 0; i--) days.push(start.subtract(i + 1, 'day'));
+    for (let i = 1; i <= totalDays; i++) days.push(start.date(i));
     const lastDow = start.date(totalDays).day();
-    for (let i = 1; i < 7 - lastDow; i++) {
-      days.push(start.date(totalDays).add(i, 'day'));
-    }
+    for (let i = 1; i < 7 - lastDow; i++) days.push(start.date(totalDays).add(i, 'day'));
     return days;
   }
 
   async function toggleDay(dateStr: string) {
-    if (processing) return;
-    const existing = haidMap.get(dateStr);
-    if (dateStr > today()) return;
-
+    if (processing || dateStr > today()) return;
     processing = true;
+
+    const rec = haidData[dateStr];
+
     try {
-      if (!existing) {
+      if (!rec) {
         await setHaidHarian(dateStr, 'haid', 3);
-      } else if (existing.status === 'haid') {
+        selectedDay = dateStr;
+        selectedFlow = 3;
+      } else if (rec.status === 'haid') {
         await setHaidHarian(dateStr, 'bersih', 0);
+        selectedDay = null;
       } else {
         await deleteHaidHarian(dateStr);
+        selectedDay = null;
       }
       await loadMonth();
     } finally {
@@ -58,13 +59,12 @@
     }
   }
 
-  async function markRange(start: string, end: string, status: string) {
-    let d = dayjs(start);
-    const endD = dayjs(end);
-    while (d.isBefore(endD) || d.isSame(endD, 'day')) {
-      await setHaidHarian(d.format('YYYY-MM-DD'), status, status === 'haid' ? 3 : 0);
-      d = d.add(1, 'day');
-    }
+  async function changeFlow(dateStr: string, delta: number) {
+    const rec = haidData[dateStr];
+    if (!rec || rec.status !== 'haid') return;
+    const newFlow = Math.max(1, Math.min(5, (rec.flow_level || 3) + delta));
+    await setHaidHarian(dateStr, 'haid', newFlow);
+    selectedFlow = newFlow;
     await loadMonth();
   }
 
@@ -93,7 +93,7 @@
   }
 
   function getHaids(): HaidHarian[] {
-    return Array.from(haidMap.values())
+    return Object.values(haidData)
       .filter(h => h.status === 'haid')
       .sort((a, b) => a.tanggal.localeCompare(b.tanggal));
   }
@@ -101,25 +101,16 @@
   function getRingkasan(): string {
     const haids = getHaids();
     if (haids.length === 0) return 'Belum ada data. Klik tanggal untuk mencatat.';
+    const t = today();
+    const todayRec = haidData[t];
 
-    const todayStr = today();
-    const todayHaids = haids.filter(h => h.tanggal <= todayStr);
-
-    if (todayHaids.length === 0) {
-      const nextHaid = haids[0];
-      const daysUntil = dayjs(nextHaid.tanggal).diff(dayjs(todayStr), 'day');
-      return `Haid berikutnya dalam ${daysUntil} hari (${formatDate(nextHaid.tanggal, 'DD MMM')})`;
+    if (todayRec?.status === 'haid') {
+      return `Hari ini sedang haid. Flow: ${'🔴'.repeat(todayRec.flow_level || 3)}${'⚪'.repeat(5 - (todayRec.flow_level || 3))}`;
     }
 
-    const latestHaid = todayHaids[todayHaids.length - 1];
-    const todayHaid = haids.find(h => h.tanggal === todayStr);
-
-    if (todayHaid) {
-      return `Hari ini sedang haid. Flow level: ${'🔴'.repeat(todayHaid.flow_level)}${'⚪'.repeat(5 - todayHaid.flow_level)}`;
-    }
-
-    const daysSinceStart = dayjs(todayStr).diff(dayjs(haids[0].tanggal), 'day') + 1;
-    return `Hari ke-${daysSinceStart} sejak mulai. Terakhir tercatat ${formatDate(latestHaid.tanggal, 'DD MMM')}`;
+    const latest = haids[haids.length - 1];
+    const daysSince = dayjs(t).diff(dayjs(latest.tanggal), 'day') + 1;
+    return `Hari ke-${daysSince} sejak mulai haid terakhir (${formatDate(latest.tanggal, 'DD MMM')}). Flow: ${'🔴'.repeat(latest.flow_level || 3)}`;
   }
 
   const DAY_LABELS = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
@@ -128,9 +119,7 @@
 <div class="space-y-6">
   <div class="flex items-center justify-between">
     <h1 class="text-2xl font-bold">🩸 Siklus Haid</h1>
-    <div class="flex gap-1">
-      <button onclick={goToday} class="btn btn-sm btn-ghost">Hari Ini</button>
-    </div>
+    <button onclick={goToday} class="btn btn-sm btn-ghost">Hari Ini</button>
   </div>
 
   <div class="card bg-base-100 shadow">
@@ -139,59 +128,86 @@
     </div>
   </div>
 
-  <div class="card bg-base-100 shadow">
-    <div class="card-body">
-      <div class="flex items-center justify-between mb-4">
-        <div class="flex items-center gap-2">
-          <button onclick={prevMonth} class="btn btn-sm btn-ghost btn-square"><ChevronLeft class="w-4 h-4" /></button>
-          <h2 class="font-bold text-lg">{dayjs(currentMonth + '-01').format('MMMM YYYY')}</h2>
-          <button onclick={nextMonth} class="btn btn-sm btn-ghost btn-square"><ChevronRight class="w-4 h-4" /></button>
-        </div>
-        <div class="flex items-center gap-2 text-xs">
-          <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm inline-block bg-error"></span> Haid</span>
-          <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm inline-block bg-success"></span> Bersih</span>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2">
+      <div class="card bg-base-100 shadow">
+        <div class="card-body">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+              <button onclick={prevMonth} class="btn btn-sm btn-ghost btn-square"><ChevronLeft class="w-4 h-4" /></button>
+              <h2 class="font-bold text-lg">{dayjs(currentMonth + '-01').format('MMMM YYYY')}</h2>
+              <button onclick={nextMonth} class="btn btn-sm btn-ghost btn-square"><ChevronRight class="w-4 h-4" /></button>
+            </div>
+            <div class="flex items-center gap-3 text-xs">
+              <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm inline-block border" style="background:#ef4444"></span> Haid</span>
+              <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm inline-block border" style="background:#22c55e"></span> Bersih</span>
+            </div>
+          </div>
+
+          {#if !loaded}
+            <div class="flex justify-center py-8"><span class="loading loading-spinner"></span></div>
+          {:else}
+            <div class="grid grid-cols-7 gap-1">
+              {#each DAY_LABELS as label}
+                <div class="text-center text-xs font-medium text-text-soft py-1">{label}</div>
+              {/each}
+              {#each daysInMonth() as day}
+                {@const dateStr = day.format('YYYY-MM-DD')}
+                {@const rec = haidData[dateStr]}
+                {@const dimmed = !isCurrentMonth(day) || isFuture(day)}
+                {@const isHaid = rec?.status === 'haid'}
+                {@const isBersih = rec?.status === 'bersih'}
+                {@const bgClass = isHaid ? 'bg-error text-white' : isBersih ? 'bg-success text-white' : dimmed ? '' : 'bg-base-200'}
+                <button
+                  onclick={() => toggleDay(dateStr)}
+                  disabled={isFuture(day) || processing}
+                  class="aspect-square rounded-lg flex flex-col items-center justify-center text-xs transition-all {bgClass} {!rec && !dimmed ? 'hover:bg-base-300' : ''} {isToday(day) ? 'ring-2 ring-primary' : ''} {dimmed ? 'opacity-25' : ''} {processing ? 'opacity-60 pointer-events-none' : ''}"
+                >
+                  <span class="font-medium">{day.format('D')}</span>
+                  {#if isHaid}
+                    <span class="text-[7px] leading-none mt-0.5">{'🔴'.repeat(rec.flow_level || 3)}</span>
+                  {/if}
+                </button>
+              {/each}
+            </div>
+          {/if}
         </div>
       </div>
+    </div>
 
-      {#if !loaded}
-        <div class="flex justify-center py-8"><span class="loading loading-spinner"></span></div>
-      {:else}
-        <div class="grid grid-cols-7 gap-1">
-          {#each DAY_LABELS as label}
-            <div class="text-center text-xs font-medium text-text-soft py-1">{label}</div>
-          {/each}
-          {#each daysInMonth() as day}
-            {@const dateStr = day.format('YYYY-MM-DD')}
-            {@const haidData = haidMap.get(dateStr)}
-            {@const dimmed = !isCurrentMonth(day) || isFuture(day)}
-            <button
-              onclick={() => toggleDay(dateStr)}
-              disabled={isFuture(day) || processing}
-              class="aspect-square rounded-lg flex flex-col items-center justify-center text-xs transition-all cursor-pointer {haidData?.status === 'haid' ? 'bg-error text-white' : haidData?.status === 'bersih' ? 'bg-success text-white' : !haidData ? 'bg-base-200' : ''} {!haidData && !dimmed ? 'hover:bg-base-300' : ''} {isToday(day) ? 'ring-2 ring-primary' : ''} {dimmed ? 'opacity-30' : ''} {isFuture(day) ? 'opacity-50' : ''} {processing ? 'opacity-60' : ''}">
-              <span class="font-medium">{day.format('D')}</span>
-              {#if haidData?.status === 'haid'}
-                <span class="text-[8px]">{'🔴'.repeat(haidData.flow_level || 1)}</span>
-              {/if}
-            </button>
-          {/each}
+    <div class="space-y-4">
+      {#if selectedDay && haidData[selectedDay]?.status === 'haid'}
+        <div class="card bg-base-100 shadow">
+          <div class="card-body">
+            <h3 class="font-semibold mb-2">{formatDate(selectedDay, 'DD MMM YYYY')}</h3>
+            <p class="text-sm text-text-soft mb-3">Atur Flow Level:</p>
+            <div class="flex items-center gap-3 justify-center">
+              <button onclick={() => changeFlow(selectedDay, -1)} class="btn btn-sm btn-ghost btn-square" disabled={haidData[selectedDay].flow_level <= 1}><Minus class="w-4 h-4" /></button>
+              <span class="text-2xl">{'🔴'.repeat(haidData[selectedDay].flow_level || 3)}{'⚪'.repeat(5 - (haidData[selectedDay].flow_level || 3))}</span>
+              <button onclick={() => changeFlow(selectedDay, 1)} class="btn btn-sm btn-ghost btn-square" disabled={haidData[selectedDay].flow_level >= 5}><Plus class="w-4 h-4" /></button>
+            </div>
+            <p class="text-xs text-center text-text-soft mt-2">Level {(haidData[selectedDay].flow_level || 3)}/5</p>
+          </div>
         </div>
       {/if}
-    </div>
-  </div>
 
-  {#if getHaids().length > 0}
-    <div class="card bg-base-100 shadow">
-      <div class="card-body">
-        <h3 class="font-semibold mb-2">📋 Riwayat Bulan Ini</h3>
-        <div class="space-y-1 max-h-48 overflow-y-auto">
-          {#each getHaids() as h}
-            <div class="flex items-center justify-between text-sm py-1 px-2 rounded bg-base-200">
-              <span>{formatDate(h.tanggal, 'DD MMM')}</span>
-              <span class="text-xs text-text-soft">Flow: {'🔴'.repeat(h.flow_level)}{'⚪'.repeat(5 - h.flow_level)}</span>
+      <div class="card bg-base-100 shadow">
+        <div class="card-body">
+          <h3 class="font-semibold mb-2">📋 Riwayat Bulan Ini</h3>
+          {#if getHaids().length === 0}
+            <p class="text-sm text-text-soft">Belum ada catatan bulan ini.</p>
+          {:else}
+            <div class="space-y-1 max-h-64 overflow-y-auto">
+              {#each getHaids() as h}
+                <div class="flex items-center justify-between text-sm py-1 px-2 rounded bg-base-200">
+                  <span>{formatDate(h.tanggal, 'DD MMM')}</span>
+                  <span class="text-xs">{'🔴'.repeat(h.flow_level)}{'⚪'.repeat(5 - h.flow_level)}</span>
+                </div>
+              {/each}
             </div>
-          {/each}
+          {/if}
         </div>
       </div>
     </div>
-  {/if}
+  </div>
 </div>
