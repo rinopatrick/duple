@@ -15,6 +15,10 @@
   import DateGeneratorPage from '../../pages/DateGeneratorPage.svelte';
   import StatsPage from '../../pages/StatsPage.svelte';
   import ApologyPage from '../../pages/ApologyPage.svelte';
+  import LoveQuizPage from '../../pages/LoveQuizPage.svelte';
+  import HealthCheckPage from '../../pages/HealthCheckPage.svelte';
+  import CalendarExportPage from '../../pages/CalendarExportPage.svelte';
+  import LLMPage from '../../pages/LLMPage.svelte';
   import SettingsPage from '../../pages/SettingsPage.svelte';
   import { getRoute, getSidebarOpen } from '../stores/app.svelte';
 
@@ -57,6 +61,14 @@
         <StatsPage />
       {:else if route === 'apology'}
         <ApologyPage />
+      {:else if route === 'quiz'}
+        <LoveQuizPage />
+      {:else if route === 'health'}
+        <HealthCheckPage />
+      {:else if route === 'calendar'}
+        <CalendarExportPage />
+      {:else if route === 'ai'}
+        <LLMPage />
       {:else if route === 'settings'}
         <SettingsPage />
       {/if}

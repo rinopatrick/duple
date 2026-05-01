@@ -13,6 +13,10 @@ export type Route =
   | 'date-generator'
   | 'stats'
   | 'apology'
+  | 'quiz'
+  | 'health'
+  | 'calendar'
+  | 'ai'
   | 'settings';
 
 export const NAV_ITEMS: { route: Route; label: string; icon: string }[] = [
@@ -28,7 +32,11 @@ export const NAV_ITEMS: { route: Route; label: string; icon: string }[] = [
   { route: 'wishlist', label: 'Wishlist', icon: '🎁' },
   { route: 'trigger', label: 'Trigger Words', icon: '⚡' },
   { route: 'apology', label: 'Apology Playbook', icon: '🛡️' },
-  { route: 'stats', label: 'Stats & Insights', icon: '📊' },
+  { route: 'quiz', label: 'Love Quiz', icon: '❤️' },
+  { route: 'stats', label: 'Stats & Charts', icon: '📊' },
+  { route: 'health', label: 'Health Check', icon: '🩺' },
+  { route: 'calendar', label: 'Calendar Export', icon: '📅' },
+  { route: 'ai', label: 'AI Advisor', icon: '🤖' },
   { route: 'orang', label: 'Orang Penting', icon: '👥' },
   { route: 'settings', label: 'Settings', icon: '⚙️' },
 ];
