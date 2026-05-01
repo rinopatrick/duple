@@ -1,15 +1,19 @@
 <script lang="ts">
   import { toggleSidebar, toggleTheme, getTheme } from '../stores/app.svelte';
-  import { getLocale, setLocale } from '../i18n';
-  import { Moon, Sun, Menu, Globe, Search, X } from 'lucide-svelte';
-  import { setRoute, NAV_MAIN, NAV_MORE, getFeature } from '../stores/app.svelte';
+  import { getLocale, setLocale, type Locale } from '../i18n';
 
   const theme = $derived(getTheme());
   const locale = $derived(getLocale());
   let searchOpen = $state(false);
   let query = $state('');
 
-  function toggleLang() { setLocale(locale === 'en' ? 'id' : 'en'); }
+  const LANG_LABELS: Record<Locale, string> = { en: 'EN', id: 'ID', es: 'ES', fr: 'FR', pt: 'PT', jp: '日本語' };
+  const LANGS: Locale[] = ['en', 'id', 'es', 'fr', 'pt', 'jp'];
+
+  function cycleLang() {
+    const idx = LANGS.indexOf(locale);
+    setLocale(LANGS[(idx + 1) % LANGS.length]);
+  }
 
   function goToRoute(r: any) { setRoute(r); searchOpen = false; query = ''; }
 
@@ -57,9 +61,9 @@
     {/if}
   </div>
   <div class="flex items-center gap-1">
-    <button onclick={toggleLang} class="btn btn-ghost btn-sm flex items-center gap-1" title="Toggle language">
+    <button onclick={cycleLang} class="btn btn-ghost btn-sm flex items-center gap-1" title="Cycle language">
       <Globe class="w-3.5 h-3.5" />
-      <span class="text-xs font-medium">{locale === 'en' ? 'EN' : 'ID'}</span>
+      <span class="text-xs font-medium">{LANG_LABELS[locale]}</span>
     </button>
     <button onclick={toggleTheme} class="btn btn-ghost btn-sm btn-square" title="Toggle theme">
       {#if theme === 'light'}<Moon class="w-4 h-4" />{:else}<Sun class="w-4 h-4" />{/if}
