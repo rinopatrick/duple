@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getAllHaidHarian, setHaidHarian, deleteHaidHarian, type HaidHarian } from '../lib/db/haid_harian';
   import { getLastSiklus } from '../lib/db/siklus';
-  import { ChevronLeft, ChevronRight, Minus, Plus } from 'lucide-svelte';
+  import { ChevronLeft, ChevronRight, Minus, Plus, X } from 'lucide-svelte';
   import { formatDate, today } from '../lib/utils/date';
   import dayjs from 'dayjs';
 
@@ -46,9 +46,12 @@
         await setHaidHarian(dateStr, 'haid', 3);
         selectedDay = dateStr;
         selectedFlow = 3;
-      } else if (rec.status === 'haid') {
-        await setHaidHarian(dateStr, 'bersih', 0);
+      } else if (rec.status === 'haid' && selectedDay === dateStr) {
+        await deleteHaidHarian(dateStr);
         selectedDay = null;
+      } else if (rec.status === 'haid') {
+        selectedDay = dateStr;
+        selectedFlow = rec.flow_level || 3;
       } else {
         await deleteHaidHarian(dateStr);
         selectedDay = null;
@@ -179,8 +182,11 @@
       {#if selectedDay && haidData[selectedDay]?.status === 'haid'}
         <div class="card bg-base-100 shadow">
           <div class="card-body">
-            <h3 class="font-semibold mb-2">{formatDate(selectedDay, 'DD MMM YYYY')}</h3>
-            <p class="text-sm text-text-soft mb-3">Atur Flow Level:</p>
+            <div class="flex justify-between items-center mb-2">
+              <h3 class="font-semibold">{formatDate(selectedDay, 'DD MMM YYYY')}</h3>
+              <button onclick={async () => { await deleteHaidHarian(selectedDay); selectedDay = null; await loadMonth(); }} class="btn btn-xs btn-ghost text-error"><X class="w-3 h-3" /> Hapus</button>
+            </div>
+            <p class="text-sm text-text-soft mb-3">Flow Level:</p>
             <div class="flex items-center gap-3 justify-center">
               <button onclick={() => changeFlow(selectedDay, -1)} class="btn btn-sm btn-ghost btn-square" disabled={haidData[selectedDay].flow_level <= 1}><Minus class="w-4 h-4" /></button>
               <span class="text-2xl">{'🔴'.repeat(haidData[selectedDay].flow_level || 3)}{'⚪'.repeat(5 - (haidData[selectedDay].flow_level || 3))}</span>
