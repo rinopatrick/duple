@@ -10,12 +10,14 @@ export type Route =
   | 'wishlist'
   | 'trigger'
   | 'orang'
+  | 'date-generator'
   | 'settings';
 
 export const NAV_ITEMS: { route: Route; label: string; icon: string }[] = [
   { route: 'dashboard', label: 'Dashboard', icon: '🏠' },
   { route: 'makanan', label: 'Makanan Favorit', icon: '🍕' },
   { route: 'log-makanan', label: 'Log Makanan', icon: '📋' },
+  { route: 'date-generator', label: 'Date Generator', icon: '🎲' },
   { route: 'siklus', label: 'Siklus Haid', icon: '🩸' },
   { route: 'mood', label: 'Mood Tracker', icon: '😊' },
   { route: 'rekomendasi', label: 'Rekomendasi', icon: '💡' },
