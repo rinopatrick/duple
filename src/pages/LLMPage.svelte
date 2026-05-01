@@ -5,7 +5,7 @@
   import { getAllTriggerWords } from '../lib/db/trigger';
   import { getLastSiklus } from '../lib/db/siklus';
   import { getAllMoodLogs } from '../lib/db/mood';
-  import { Bot, Send, Key, Settings2, BookOpen, MessageCircle, Brain } from 'lucide-svelte';
+  import { Bot, Send, Key, Settings2, BookOpen, MessageCircle, Brain, LogIn } from 'lucide-svelte';
 
   let tab: 'chat' | 'wiki' = $state('chat');
   let apiKey = $state('');
