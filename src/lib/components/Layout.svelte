@@ -20,20 +20,34 @@
   import CalendarExportPage from '../../pages/CalendarExportPage.svelte';
   import LLMPage from '../../pages/LLMPage.svelte';
   import SettingsPage from '../../pages/SettingsPage.svelte';
-  import { getRoute, getSidebarOpen } from '../stores/app.svelte';
+  import { getRoute, getSidebarOpen, toggleSidebar } from '../stores/app.svelte';
 
   const route = $derived(getRoute());
   const sidebarOpen = $derived(getSidebarOpen());
 </script>
 
 <div class="flex h-screen overflow-hidden bg-base-200">
+  <!-- Desktop sidebar (always visible) -->
+  <div class="hidden lg:flex shrink-0">
+    {#if sidebarOpen}
+      <Sidebar />
+    {/if}
+  </div>
+
+  <!-- Mobile sidebar (overlay) -->
   {#if sidebarOpen}
-    <Sidebar />
+    <div class="lg:hidden fixed inset-0 z-40 flex">
+      <div class="absolute inset-0 bg-black/40" onclick={toggleSidebar}></div>
+      <div class="relative z-50">
+        <Sidebar />
+      </div>
+    </div>
   {/if}
+
   <div class="flex flex-col flex-1 overflow-hidden">
     <TopBar />
-    <main class="flex-1 overflow-y-auto p-4 md:p-6">
-      <div class="animate-in" style="animation: fadeSlideIn 0.2s ease-out">
+    <main class="flex-1 overflow-y-auto p-3 md:p-4 lg:p-6">
+      <div style="animation: fadeSlideIn 0.2s ease-out">
       {#if route === 'dashboard'}
         <Dashboard />
       {:else if route === 'makanan'}
