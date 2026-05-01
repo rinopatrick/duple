@@ -1,13 +1,13 @@
 <script lang="ts">
   import { getAllRencana, createRencana, updateRencana, deleteRencana, type RencanaTempat } from '../lib/db/rencana';
-  import { Plus, Trash2, Edit3, MapPin } from 'lucide-svelte';
+  import { Plus, Trash2, Edit3, MapPin, ExternalLink, Navigation } from 'lucide-svelte';
   import { formatCurrency } from '../lib/utils/date';
 
   let items: RencanaTempat[] = $state([]);
   let loaded = $state(false);
   let showForm = $state(false);
   let editId: number | null = $state(null);
-  let form = $state({ nama: '', kategori: 'kuliner', lokasi: '', status: 'wishlist', estimasi_biaya: 0, notes: '' });
+  let form = $state({ nama: '', kategori: 'kuliner', lokasi: '', maps_url: '', status: 'wishlist', estimasi_biaya: 0, notes: '' });
 
   const KATEGORI = ['kuliner', 'wisata', 'outdoor', 'indoor', 'belanja', 'hiburan', 'lainnya'];
   const STATUSES = ['wishlist', 'rencana', 'booked', 'visited'];
@@ -27,14 +27,28 @@
 
   function openAdd() {
     editId = null;
-    form = { nama: '', kategori: 'kuliner', lokasi: '', status: 'wishlist', estimasi_biaya: 0, notes: '' };
+    form = { nama: '', kategori: 'kuliner', lokasi: '', maps_url: '', status: 'wishlist', estimasi_biaya: 0, notes: '' };
     showForm = true;
   }
 
   function openEdit(item: RencanaTempat) {
     editId = item.id;
-    form = { nama: item.nama, kategori: item.kategori, lokasi: item.lokasi, status: item.status, estimasi_biaya: item.estimasi_biaya, notes: item.notes };
+    form = { nama: item.nama, kategori: item.kategori, lokasi: item.lokasi, maps_url: item.maps_url || '', status: item.status, estimasi_biaya: item.estimasi_biaya, notes: item.notes };
     showForm = true;
+  }
+
+  function getGoogleMapsUrl(item: RencanaTempat): string {
+    if (item.maps_url) return item.maps_url;
+    const query = encodeURIComponent(`${item.nama} ${item.lokasi}`.trim());
+    return `https://www.google.com/maps/search/${query}`;
+  }
+
+  function getDirectionsUrl(item: RencanaTempat): string {
+    if (item.maps_url) {
+      return item.maps_url.replace('/place/', '/dir/');
+    }
+    const query = encodeURIComponent(`${item.nama} ${item.lokasi}`.trim());
+    return `https://www.google.com/maps/dir/?api=1&destination=${query}`;
   }
 
   async function save() {
@@ -79,6 +93,11 @@
             <select class="select select-bordered" bind:value={form.status}>
               {#each STATUSES as s}<option value={s}>{STATUS_LABELS[s] || s}</option>{/each}
             </select>
+          </div>
+          <div class="form-control md:col-span-2">
+            <label class="label"><span class="label-text">Google Maps URL</span></label>
+            <input type="url" class="input input-bordered" bind:value={form.maps_url} placeholder="https://maps.app.goo.gl/... atau https://www.google.com/maps/place/..." />
+            <span class="text-xs text-base-content/50 mt-1">Share link dari Google Maps → copy paste di sini</span>
           </div>
           <div class="form-control">
             <label class="label"><span class="label-text">Estimasi Biaya</span></label>
@@ -125,9 +144,19 @@
                 <p class="text-xs text-base-content/50">{item.notes}</p>
               {/if}
             </div>
-            <div class="flex gap-1 justify-end mt-2">
-              <button onclick={() => openEdit(item)} class="btn btn-xs btn-ghost"><Edit3 class="w-3 h-3" /></button>
-              <button onclick={() => remove(item.id)} class="btn btn-xs btn-ghost text-error"><Trash2 class="w-3 h-3" /></button>
+            <div class="flex gap-1 justify-between items-center mt-2">
+              <div class="flex gap-1">
+                <a href={getGoogleMapsUrl(item)} target="_blank" rel="noopener" class="btn btn-xs btn-ghost" title="Buka di Google Maps">
+                  <ExternalLink class="w-3 h-3" /> Maps
+                </a>
+                <a href={getDirectionsUrl(item)} target="_blank" rel="noopener" class="btn btn-xs btn-ghost" title="Petunjuk arah">
+                  <Navigation class="w-3 h-3" /> Arah
+                </a>
+              </div>
+              <div class="flex gap-1">
+                <button onclick={() => openEdit(item)} class="btn btn-xs btn-ghost"><Edit3 class="w-3 h-3" /></button>
+                <button onclick={() => remove(item.id)} class="btn btn-xs btn-ghost text-error"><Trash2 class="w-3 h-3" /></button>
+              </div>
             </div>
           </div>
         </div>

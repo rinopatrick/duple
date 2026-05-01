@@ -118,7 +118,7 @@ class DexieDatabase {
       } else if (table === 'mood_log') {
         Object.assign(data, { tanggal: params[0], waktu: params[1], mood: params[2], trigger_penyebab: params[3], notes: params[4], created_at: now });
       } else if (table === 'rencana_tempat') {
-        Object.assign(data, { nama: params[0], kategori: params[1], lokasi: params[2], status: params[3], estimasi_biaya: params[4], notes: params[5], created_at: now, updated_at: now });
+        Object.assign(data, { nama: params[0], kategori: params[1], lokasi: params[2], maps_url: params[3], status: params[4], estimasi_biaya: params[5], notes: params[6], created_at: now, updated_at: now });
       } else if (table === 'momen') {
         Object.assign(data, { nama: params[0], tanggal: params[1], kategori: params[2], notes: params[3], created_at: now, updated_at: now });
       } else if (table === 'wishlist_hadiah') {
@@ -227,6 +227,7 @@ async function initSchema(db: any) {
     for (const stmt of statements) {
       await db.execute(stmt);
     }
+    try { await db.execute("ALTER TABLE rencana_tempat ADD COLUMN maps_url TEXT DEFAULT ''"); } catch (_) {}
   }
 }
 

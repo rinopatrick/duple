@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS rencana_tempat (
   nama TEXT NOT NULL,
   kategori TEXT DEFAULT 'kuliner',
   lokasi TEXT DEFAULT '',
+  maps_url TEXT DEFAULT '',
   status TEXT DEFAULT 'wishlist',
   estimasi_biaya INTEGER DEFAULT 0,
   notes TEXT DEFAULT '',

@@ -5,6 +5,7 @@ export interface RencanaTempat {
   nama: string;
   kategori: string;
   lokasi: string;
+  maps_url: string;
   status: string;
   estimasi_biaya: number;
   notes: string;
@@ -18,15 +19,15 @@ export async function getAllRencana(): Promise<RencanaTempat[]> {
 
 export async function createRencana(data: Omit<RencanaTempat, 'id' | 'created_at' | 'updated_at'>) {
   return insert(
-    'INSERT INTO rencana_tempat (nama, kategori, lokasi, status, estimasi_biaya, notes) VALUES (?, ?, ?, ?, ?, ?)',
-    [data.nama, data.kategori, data.lokasi, data.status, data.estimasi_biaya, data.notes]
+    'INSERT INTO rencana_tempat (nama, kategori, lokasi, maps_url, status, estimasi_biaya, notes) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    [data.nama, data.kategori, data.lokasi, data.maps_url, data.status, data.estimasi_biaya, data.notes]
   );
 }
 
 export async function updateRencana(id: number, data: Omit<RencanaTempat, 'id' | 'created_at' | 'updated_at'>) {
   return execute(
-    'UPDATE rencana_tempat SET nama=?, kategori=?, lokasi=?, status=?, estimasi_biaya=?, notes=?, updated_at=datetime("now","localtime") WHERE id=?',
-    [data.nama, data.kategori, data.lokasi, data.status, data.estimasi_biaya, data.notes, id]
+    'UPDATE rencana_tempat SET nama=?, kategori=?, lokasi=?, maps_url=?, status=?, estimasi_biaya=?, notes=?, updated_at=datetime("now","localtime") WHERE id=?',
+    [data.nama, data.kategori, data.lokasi, data.maps_url, data.status, data.estimasi_biaya, data.notes, id]
   );
 }
 
