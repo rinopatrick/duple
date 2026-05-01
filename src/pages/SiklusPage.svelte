@@ -4,6 +4,7 @@
   import { ChevronLeft, ChevronRight, Minus, Plus, X } from 'lucide-svelte';
   import { formatDate, today } from '../lib/utils/date';
   import dayjs from 'dayjs';
+  import { tr } from '../lib/i18n';
 
   let currentMonth = $state(dayjs().format('YYYY-MM'));
   let haidData: Record<string, HaidHarian> = $state({});
@@ -103,26 +104,25 @@
 
   function getRingkasan(): string {
     const haids = getHaids();
-    if (haids.length === 0) return 'Belum ada data. Klik tanggal untuk mencatat.';
+    if (haids.length === 0) return tr().siklus.noData;
     const t = today();
     const todayRec = haidData[t];
 
     if (todayRec?.status === 'haid') {
-      return `Hari ini sedang haid. Flow: ${'🔴'.repeat(todayRec.flow_level || 3)}${'⚪'.repeat(5 - (todayRec.flow_level || 3))}`;
+      return `${tr().siklus.activeToday} Flow: ${'🔴'.repeat(todayRec.flow_level || 3)}${'⚪'.repeat(5 - (todayRec.flow_level || 3))}`;
     }
 
     const latest = haids[haids.length - 1];
     const daysSince = dayjs(t).diff(dayjs(latest.tanggal), 'day') + 1;
-    return `Hari ke-${daysSince} sejak mulai haid terakhir (${formatDate(latest.tanggal, 'DD MMM')}). Flow: ${'🔴'.repeat(latest.flow_level || 3)}`;
+    return `${tr().siklus.activeDay.replace('{n}', String(daysSince))} (${formatDate(latest.tanggal, 'DD MMM')}). Flow: ${'🔴'.repeat(latest.flow_level || 3)}`;
   }
 
-  const DAY_LABELS = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
 </script>
 
 <div class="space-y-6">
   <div class="flex items-center justify-between">
-    <h1 class="text-2xl font-bold">🩸 Siklus Haid</h1>
-    <button onclick={goToday} class="btn btn-sm btn-ghost">Hari Ini</button>
+    <h1 class="text-2xl font-bold">{tr().siklus.heading}</h1>
+    <button onclick={goToday} class="btn btn-sm btn-ghost">{tr().siklus.today}</button>
   </div>
 
   <div class="card bg-base-100 shadow">
@@ -142,8 +142,8 @@
               <button onclick={nextMonth} class="btn btn-sm btn-ghost btn-square"><ChevronRight class="w-4 h-4" /></button>
             </div>
             <div class="flex items-center gap-3 text-xs">
-              <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm inline-block border" style="background:#ef4444"></span> Haid</span>
-              <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm inline-block border" style="background:#22c55e"></span> Bersih</span>
+              <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm inline-block border" style="background:#ef4444"></span> {tr().siklus.menstruation}</span>
+              <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm inline-block border" style="background:#22c55e"></span> {tr().siklus.clean}</span>
             </div>
           </div>
 
@@ -151,7 +151,7 @@
             <div class="flex justify-center py-8"><span class="loading loading-spinner"></span></div>
           {:else}
             <div class="grid grid-cols-7 gap-1">
-              {#each DAY_LABELS as label}
+              {#each tr().siklus.dayLabels as label}
                 <div class="text-center text-xs font-medium text-text-soft py-1">{label}</div>
               {/each}
               {#each daysInMonth() as day}
@@ -184,24 +184,24 @@
           <div class="card-body">
             <div class="flex justify-between items-center mb-2">
               <h3 class="font-semibold">{formatDate(selectedDay, 'DD MMM YYYY')}</h3>
-              <button onclick={async () => { await deleteHaidHarian(selectedDay); selectedDay = null; await loadMonth(); }} class="btn btn-xs btn-ghost text-error"><X class="w-3 h-3" /> Hapus</button>
+              <button onclick={async () => { await deleteHaidHarian(selectedDay); selectedDay = null; await loadMonth(); }} class="btn btn-xs btn-ghost text-error"><X class="w-3 h-3" /> {tr().siklus.delete}</button>
             </div>
-            <p class="text-sm text-text-soft mb-3">Flow Level:</p>
+            <p class="text-sm text-text-soft mb-3">{tr().siklus.flowLevel}</p>
             <div class="flex items-center gap-3 justify-center">
               <button onclick={() => changeFlow(selectedDay, -1)} class="btn btn-sm btn-ghost btn-square" disabled={haidData[selectedDay].flow_level <= 1}><Minus class="w-4 h-4" /></button>
               <span class="text-2xl">{'🔴'.repeat(haidData[selectedDay].flow_level || 3)}{'⚪'.repeat(5 - (haidData[selectedDay].flow_level || 3))}</span>
               <button onclick={() => changeFlow(selectedDay, 1)} class="btn btn-sm btn-ghost btn-square" disabled={haidData[selectedDay].flow_level >= 5}><Plus class="w-4 h-4" /></button>
             </div>
-            <p class="text-xs text-center text-text-soft mt-2">Level {(haidData[selectedDay].flow_level || 3)}/5</p>
+            <p class="text-xs text-center text-text-soft mt-2">{tr().siklus.levelOf.replace('{n}', String(haidData[selectedDay].flow_level || 3))}</p>
           </div>
         </div>
       {/if}
 
       <div class="card bg-base-100 shadow">
         <div class="card-body">
-          <h3 class="font-semibold mb-2">📋 Riwayat Bulan Ini</h3>
+          <h3 class="font-semibold mb-2">{tr().siklus.history}</h3>
           {#if getHaids().length === 0}
-            <p class="text-sm text-text-soft">Belum ada catatan bulan ini.</p>
+            <p class="text-sm text-text-soft">{tr().siklus.noHistory}</p>
           {:else}
             <div class="space-y-1 max-h-64 overflow-y-auto">
               {#each getHaids() as h}

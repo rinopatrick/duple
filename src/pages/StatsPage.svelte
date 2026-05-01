@@ -6,6 +6,7 @@
   import { getAllRencana } from '../lib/db/rencana';
   import { getLastSiklus } from '../lib/db/siklus';
   import { formatDate } from '../lib/utils/date';
+  import { tr } from '../lib/i18n';
   import dayjs from 'dayjs';
   import Chart from 'chart.js/auto';
 
@@ -80,19 +81,19 @@
 </script>
 
 <div class="space-y-6">
-  <h1 class="text-2xl font-bold">📊 Stats & Insights</h1>
+  <h1 class="text-2xl font-bold">{tr().stats.heading}</h1>
   {#if !loaded}
     <div class="flex justify-center"><span class="loading loading-spinner loading-lg"></span></div>
   {:else}
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      <div class="card bg-base-100 shadow"><div class="card-body text-center"><p class="text-3xl font-bold text-primary">{foodCount}</p><p class="text-xs text-text-soft">Foods</p></div></div>
-      <div class="card bg-base-100 shadow"><div class="card-body text-center"><p class="text-3xl font-bold text-secondary">{logCount}</p><p class="text-xs text-text-soft">Meals</p></div></div>
-      <div class="card bg-base-100 shadow"><div class="card-body text-center"><p class="text-3xl font-bold text-accent">{moodCount}</p><p class="text-xs text-text-soft">Moods</p></div></div>
-      <div class="card bg-base-100 shadow"><div class="card-body text-center"><p class="text-3xl font-bold text-success">{streak}d</p><p class="text-xs text-text-soft">Streak</p></div></div>
+      <div class="card bg-base-100 shadow"><div class="card-body text-center"><p class="text-3xl font-bold text-primary">{foodCount}</p><p class="text-xs text-text-soft">{tr().stats.foods}</p></div></div>
+      <div class="card bg-base-100 shadow"><div class="card-body text-center"><p class="text-3xl font-bold text-secondary">{logCount}</p><p class="text-xs text-text-soft">{tr().stats.meals}</p></div></div>
+      <div class="card bg-base-100 shadow"><div class="card-body text-center"><p class="text-3xl font-bold text-accent">{moodCount}</p><p class="text-xs text-text-soft">{tr().stats.moods}</p></div></div>
+      <div class="card bg-base-100 shadow"><div class="card-body text-center"><p class="text-3xl font-bold text-success">{streak}d</p><p class="text-xs text-text-soft">{tr().stats.streak}</p></div></div>
     </div>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <div class="card bg-base-100 shadow"><div class="card-body"><h2 class="font-bold mb-3">😊 Mood Distribution</h2><canvas bind:this={moodCanvas}></canvas></div></div>
-      <div class="card bg-base-100 shadow"><div class="card-body"><h2 class="font-bold mb-3">🍕 Most Eaten</h2><canvas bind:this={foodCanvas}></canvas></div></div>
+      <div class="card bg-base-100 shadow"><div class="card-body"><h2 class="font-bold mb-3">{tr().stats.moodDistribution}</h2><canvas bind:this={moodCanvas}></canvas></div></div>
+      <div class="card bg-base-100 shadow"><div class="card-body"><h2 class="font-bold mb-3">{tr().stats.mostEaten}</h2><canvas bind:this={foodCanvas}></canvas></div></div>
     </div>
   {/if}
 </div>

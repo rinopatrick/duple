@@ -3,6 +3,7 @@
   import { Plus, Trash2, Calendar } from 'lucide-svelte';
   import { formatDate, addDays, daysBetween } from '../lib/utils/date';
   import dayjs from 'dayjs';
+  import { tr } from '../lib/i18n';
 
   let items: Momen[] = $state([]);
   let loaded = $state(false);
@@ -33,51 +34,51 @@
   }
 
   async function remove(id: number) {
-    if (confirm('Hapus momen ini?')) { await deleteMomen(id); await loadData(); }
+    if (confirm(tr().momen.deleteConfirm)) { await deleteMomen(id); await loadData(); }
   }
 
   function countdown(tanggal: string): string {
     const today = dayjs().format('YYYY-MM-DD');
     const days = daysBetween(today, tanggal);
-    if (days === 0) return 'Hari ini! 🎉';
-    if (days < 0) return `${Math.abs(days)} hari yang lalu`;
-    return `${days} hari lagi`;
+    if (days === 0) return tr().momen.today;
+    if (days < 0) return tr().momen.daysAgo.replace('{n}', String(Math.abs(days)));
+    return tr().momen.daysLeft.replace('{n}', String(days));
   }
 </script>
 
 <div class="space-y-6">
   <div class="flex items-center justify-between">
-    <h1 class="text-2xl font-bold">❤️ Momen Spesial</h1>
-    <button onclick={openAdd} class="btn btn-primary btn-sm"><Plus class="w-4 h-4" /> Tambah</button>
+    <h1 class="text-2xl font-bold">{tr().momen.heading}</h1>
+    <button onclick={openAdd} class="btn btn-primary btn-sm"><Plus class="w-4 h-4" /> {tr().momen.add}</button>
   </div>
 
   {#if showForm}
     <div class="card bg-base-100 shadow">
       <div class="card-body">
-        <h3 class="card-title">Tambah Momen</h3>
+        <h3 class="card-title">{tr().momen.addTitle}</h3>
         <div class="form-control">
-          <label class="label"><span class="label-text">Nama Momen</span></label>
-          <input type="text" class="input input-bordered" bind:value={form.nama} placeholder="Contoh: Anniversary, First Date, dll" />
+          <label class="label"><span class="label-text">{tr().momen.name}</span></label>
+          <input type="text" class="input input-bordered" bind:value={form.nama} placeholder={tr().momen.namePlaceholder} />
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div class="form-control">
-            <label class="label"><span class="label-text">Tanggal</span></label>
+            <label class="label"><span class="label-text">{tr().momen.date}</span></label>
             <input type="date" class="input input-bordered" bind:value={form.tanggal} />
           </div>
           <div class="form-control">
-            <label class="label"><span class="label-text">Kategori</span></label>
+            <label class="label"><span class="label-text">{tr().momen.category}</span></label>
             <select class="select select-bordered" bind:value={form.kategori}>
-              {#each KATEGORI as k}<option value={k}>{ICONS[k]} {k}</option>{/each}
+              {#each KATEGORI as k}<option value={k}>{ICONS[k]} {tr().momen.categories[k] || k}</option>{/each}
             </select>
           </div>
         </div>
         <div class="form-control">
-          <label class="label"><span class="label-text">Catatan</span></label>
+          <label class="label"><span class="label-text">{tr().common.notes}</span></label>
           <textarea class="textarea textarea-bordered" rows="2" bind:value={form.notes}></textarea>
         </div>
         <div class="flex gap-2 mt-3">
-          <button onclick={save} class="btn btn-primary" disabled={!form.nama || !form.tanggal}>Simpan</button>
-          <button onclick={() => showForm = false} class="btn btn-ghost">Batal</button>
+          <button onclick={save} class="btn btn-primary" disabled={!form.nama || !form.tanggal}>{tr().common.save}</button>
+          <button onclick={() => showForm = false} class="btn btn-ghost">{tr().common.cancel}</button>
         </div>
       </div>
     </div>
@@ -88,7 +89,7 @@
   {:else if items.length === 0}
     <div class="text-center py-12 text-base-content/50">
       <p class="text-4xl mb-4">💝</p>
-      <p>Belum ada momen spesial.</p>
+      <p>{tr().momen.empty}</p>
     </div>
   {:else}
     <div class="space-y-2">

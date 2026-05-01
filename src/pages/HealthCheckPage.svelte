@@ -1,29 +1,24 @@
 <script lang="ts">
   import { Heart, TrendingUp } from 'lucide-svelte';
   import { getAllMoodLogs } from '../lib/db/mood';
+  import { tr } from '../lib/i18n';
   import dayjs from 'dayjs';
 
   let step = $state(0);
   let scores: number[] = $state([]);
   let result: { total: number; level: string; emoji: string; tip: string } | null = $state(null);
 
-  const QUESTIONS = [
-    'How connected did you feel this week?',
-    'How much quality time did you spend?',
-    'How well did you communicate?',
-    'How appreciated did they make you feel?',
-    'How present were you for them?',
-  ];
+  const QUESTIONS = tr().health.questions;
 
   function answer(n: number) {
     scores = [...scores, n];
     if (step < QUESTIONS.length - 1) { step++; return; }
     const total = scores.reduce((a,b)=>a+b,0);
     let level: string, emoji: string, tip: string;
-    if (total >= 20) { level = 'Thriving'; emoji = '🌟'; tip = 'Keep doing what you\'re doing. Maybe plan a celebration date!'; }
-    else if (total >= 14) { level = 'Good'; emoji = '💚'; tip = 'Solid foundation. A few small tweaks could make it even better.'; }
-    else if (total >= 9) { level = 'Needs Attention'; emoji = '🟡'; tip = 'Time for a heart-to-heart conversation. Small changes can make a big difference.'; }
-    else { level = 'Struggling'; emoji = '❤️‍🩹'; tip = 'That\'s okay. Relationships have ups and downs. Prioritize a calm, honest conversation.'; }
+    if (total >= 20) { level = tr().health.levels.thriving.label; emoji = '🌟'; tip = tr().health.levels.thriving.tip; }
+    else if (total >= 14) { level = tr().health.levels.good.label; emoji = '💚'; tip = tr().health.levels.good.tip; }
+    else if (total >= 9) { level = tr().health.levels.attention.label; emoji = '🟡'; tip = tr().health.levels.attention.tip; }
+    else { level = tr().health.levels.struggling.label; emoji = '❤️‍🩹'; tip = tr().health.levels.struggling.tip; }
     result = { total, level, emoji, tip };
   }
 
@@ -31,7 +26,7 @@
 </script>
 
 <div class="space-y-6 max-w-xl mx-auto">
-  <h1 class="text-2xl font-bold text-center">🩺 Relationship Health Check</h1>
+  <h1 class="text-2xl font-bold text-center">{tr().health.heading}</h1>
   {#if result}
     <div class="card bg-base-100 shadow text-center space-y-4">
       <div class="card-body">
@@ -40,22 +35,22 @@
         <div class="w-full bg-base-200 rounded-full h-4">
           <div class="h-full rounded-full bg-primary" style="width:{(result.total/25)*100}%"></div>
         </div>
-        <p class="text-text-soft">{Math.round((result.total/25)*100)}% — Score {result.total}/25</p>
+        <p class="text-text-soft">{tr().health.result.replace('{pct}', String(Math.round((result.total/25)*100))).replace('{score}', String(result.total))}</p>
         <div class="alert alert-info text-left"><p class="text-sm">{result.tip}</p></div>
-        <button onclick={reset} class="btn btn-ghost btn-sm">Check Again</button>
+        <button onclick={reset} class="btn btn-ghost btn-sm">{tr().health.retry}</button>
       </div>
     </div>
   {:else}
     <div class="card bg-base-100 shadow">
       <div class="card-body">
-        <p class="text-sm text-text-soft mb-4">Question {step + 1} of {QUESTIONS.length}</p>
+        <p class="text-sm text-text-soft mb-4">{tr().health.progress.replace('{n}', String(step + 1)).replace('{total}', String(QUESTIONS.length))}</p>
         <p class="text-lg font-medium mb-6">{QUESTIONS[step]}</p>
         <div class="flex gap-2">
           {#each [1,2,3,4,5] as n}
             <button onclick={() => answer(n)} class="btn btn-outline flex-1">{n}</button>
           {/each}
         </div>
-        <div class="flex justify-between text-xs text-text-soft mt-2"><span>Not at all</span><span>Amazing</span></div>
+        <div class="flex justify-between text-xs text-text-soft mt-2"><span>{tr().health.scaleLow}</span><span>{tr().health.scaleHigh}</span></div>
       </div>
     </div>
   {/if}

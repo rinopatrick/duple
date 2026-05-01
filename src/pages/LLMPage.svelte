@@ -6,8 +6,9 @@
   import { getLastSiklus } from '../lib/db/siklus';
   import { getAllMoodLogs } from '../lib/db/mood';
   import { Bot, Send, Key, Settings2, BookOpen, MessageCircle, Brain, LogIn } from 'lucide-svelte';
+  import { tr } from '../lib/i18n';
 
-  let tab: 'chat' | 'wiki' = $state('chat');
+  let tab: 'chat' | 'wiki' | 'settings' = $state('chat');
   let apiKey = $state('');
   let provider = $state('openai');
   let model = $state('gpt-4o-mini');
@@ -18,26 +19,15 @@
   let loading = $state(false);
 
   const PROVIDERS: Record<string, { name: string; models: string[]; baseURL: string; header: string; getKey: string }> = {
-    openai: { name: 'OpenAI', models: ['gpt-4o-mini', 'gpt-4o', 'gpt-4.1-nano'], baseURL: 'https://api.openai.com/v1/chat/completions', header: 'Bearer', getKey: 'https://platform.openai.com/api-keys' },
-    anthropic: { name: 'Anthropic (Claude)', models: ['claude-3-haiku-20240307', 'claude-3-5-sonnet-20241022'], baseURL: 'https://api.anthropic.com/v1/messages', header: 'x-api-key', getKey: 'https://console.anthropic.com/keys' },
-    google: { name: 'Google AI Studio', models: ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-2.5-pro-exp-03-25'], baseURL: 'https://generativelanguage.googleapis.com/v1beta/models/', header: 'key', getKey: 'https://aistudio.google.com/apikey' },
-    groq: { name: 'Groq (fast & free tier)', models: ['llama-3.3-70b-versatile', 'mixtral-8x7b-32768', 'gemma2-9b-it'], baseURL: 'https://api.groq.com/openai/v1/chat/completions', header: 'Bearer', getKey: 'https://console.groq.com/keys' },
-    openrouter: { name: 'OpenRouter (any model)', models: ['google/gemini-2.0-flash-001', 'anthropic/claude-3.5-sonnet', 'openai/gpt-4o-mini', 'meta-llama/llama-3.3-70b-instruct'], baseURL: 'https://openrouter.ai/api/v1/chat/completions', header: 'Bearer', getKey: 'https://openrouter.ai/keys' },
-    ollama: { name: 'Ollama (local)', models: ['llama3.2', 'mistral', 'gemma2', 'phi3'], baseURL: 'http://localhost:11434/v1/chat/completions', header: 'none', getKey: 'https://ollama.com/download' },
+    openai: { name: tr().llm.providers.openai, models: ['gpt-4o-mini', 'gpt-4o', 'gpt-4.1-nano'], baseURL: 'https://api.openai.com/v1/chat/completions', header: 'Bearer', getKey: 'https://platform.openai.com/api-keys' },
+    anthropic: { name: tr().llm.providers.anthropic, models: ['claude-3-haiku-20240307', 'claude-3-5-sonnet-20241022'], baseURL: 'https://api.anthropic.com/v1/messages', header: 'x-api-key', getKey: 'https://console.anthropic.com/keys' },
+    google: { name: tr().llm.providers.google, models: ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-2.5-pro-exp-03-25'], baseURL: 'https://generativelanguage.googleapis.com/v1beta/models/', header: 'key', getKey: 'https://aistudio.google.com/apikey' },
+    groq: { name: tr().llm.providers.groq, models: ['llama-3.3-70b-versatile', 'mixtral-8x7b-32768', 'gemma2-9b-it'], baseURL: 'https://api.groq.com/openai/v1/chat/completions', header: 'Bearer', getKey: 'https://console.groq.com/keys' },
+    openrouter: { name: tr().llm.providers.openrouter, models: ['google/gemini-2.0-flash-001', 'anthropic/claude-3.5-sonnet', 'openai/gpt-4o-mini', 'meta-llama/llama-3.3-70b-instruct'], baseURL: 'https://openrouter.ai/api/v1/chat/completions', header: 'Bearer', getKey: 'https://openrouter.ai/keys' },
+    ollama: { name: tr().llm.providers.ollama, models: ['llama3.2', 'mistral', 'gemma2', 'phi3'], baseURL: 'http://localhost:11434/v1/chat/completions', header: 'none', getKey: 'https://ollama.com/download' },
   };
 
-  const WIKI_TOPICS = [
-    { title: 'Active Listening', emoji: '👂', tip: 'Listen to understand, not to respond. Repeat back what they said: "So what I hear is..." This alone de-escalates 80% of arguments.' },
-    { title: 'The 5:1 Ratio', emoji: '⚖️', tip: 'For every negative interaction, you need 5 positive ones to maintain a healthy relationship. Small compliments count.' },
-    { title: 'Validate Feelings First', emoji: '🫂', tip: '"I understand why you feel that way" goes further than "Here\'s how to fix it." Emotional validation before problem-solving.' },
-    { title: 'PMS Survival Guide', emoji: '🩸', tip: 'Days before: extra patience, comfort food ready, no debates. During: warm drinks, lower back rubs, quiet time. Never joke about PMS.' },
-    { title: 'Love Languages 101', emoji: '❤️', tip: 'Words · Acts · Gifts · Time · Touch. Your partner likely has a different love language than you. Learn theirs, speak it daily.' },
-    { title: 'The Soft Start-Up', emoji: '🌱', tip: 'Start difficult conversations gently. Instead of "You never help," try "I\'m feeling overwhelmed — could we figure out chores together?"' },
-    { title: 'Bids for Connection', emoji: '🤝', tip: 'Small "bids" (a comment, a glance, a touch) are attempts to connect. Turning toward these bids builds trust. Ignoring them erodes it.' },
-    { title: 'Repair After Fights', emoji: '🔧', tip: 'After arguments: take a 20-min break, then return calmly. Use "I felt..." not "You did..." A sincere apology + a hug rebuilds connection.' },
-    { title: 'Random Kindness', emoji: '💝', tip: 'Surprise with their favorite snack. Leave a note. Send a random "thinking of you" text. These micro-moments build relationship wealth over time.' },
-    { title: 'Handling Their Stress', emoji: '🧘', tip: 'When they\'re stressed, don\'t offer solutions unless asked. Say: "That sounds really hard. I\'m here." Physical presence + validation = comfort.' },
-  ];
+  const WIKI_TOPICS = tr().llm.wiki;
 
   $effect(() => { loadConfig(); });
 
@@ -146,20 +136,20 @@
 </script>
 
 <div class="space-y-6 max-w-3xl mx-auto">
-  <h1 class="text-2xl font-bold">🤖 AI Advisor</h1>
+  <h1 class="text-2xl font-bold">{tr().llm.heading}</h1>
 
   <div class="tabs tabs-boxed">
-    <button class="tab" class:tab-active={tab === 'chat'} onclick={() => tab = 'chat'}><MessageCircle class="w-4 h-4" /> Chat</button>
-    <button class="tab" class:tab-active={tab === 'wiki'} onclick={() => tab = 'wiki'}><BookOpen class="w-4 h-4" /> Wiki</button>
-    <button class="tab" class:tab-active={tab === 'settings'} onclick={() => tab = 'settings'}><Settings2 class="w-4 h-4" /> Setup</button>
+    <button class="tab" class:tab-active={tab === 'chat'} onclick={() => tab = 'chat'}><MessageCircle class="w-4 h-4" /> {tr().llm.tabs.chat}</button>
+    <button class="tab" class:tab-active={tab === 'wiki'} onclick={() => tab = 'wiki'}><BookOpen class="w-4 h-4" /> {tr().llm.tabs.wiki}</button>
+    <button class="tab" class:tab-active={tab === 'settings'} onclick={() => tab = 'settings'}><Settings2 class="w-4 h-4" /> {tr().llm.tabs.setup}</button>
   </div>
 
   {#if tab === 'chat' && !configured}
     <div class="card bg-base-100 shadow"><div class="card-body text-center text-text-soft py-12">
       <Bot class="w-12 h-12 mx-auto mb-4 opacity-50" />
-      <p class="font-medium">AI Advisor needs setup first</p>
-      <p class="text-sm mt-2">Click the <strong>Setup</strong> tab above — bring your own API key from any provider. Free tiers available.</p>
-      <button onclick={() => tab = 'settings'} class="btn btn-primary btn-sm mt-4">Go to Setup</button>
+      <p class="font-medium">{tr().llm.setupNeeded}</p>
+      <p class="text-sm mt-2">{tr().llm.setupDesc}</p>
+      <button onclick={() => tab = 'settings'} class="btn btn-primary btn-sm mt-4">{tr().llm.goSetup}</button>
     </div></div>
   {:else if tab === 'chat'}
     <div class="card bg-base-100 shadow min-h-[450px] flex flex-col">
@@ -168,7 +158,7 @@
           <span class="flex items-center gap-1"><Brain class="w-3 h-3" /> {PROVIDERS[provider]?.name} · {model}</span>
           <label class="flex items-center gap-1 cursor-pointer select-none">
             <input type="checkbox" class="toggle" checked={useRAG} onchange={() => useRAG = !useRAG} />
-            <span>Context-aware</span>
+            <span>{tr().llm.contextAware}</span>
           </label>
         </div>
         <div class="flex-1 overflow-y-auto space-y-3 mb-4 max-h-[500px]">
@@ -185,8 +175,8 @@
           {#if messages.length === 0}
             <div class="text-center text-text-soft pt-12 space-y-2">
               <Bot class="w-10 h-10 mx-auto opacity-40" />
-              <p>Ask me anything about your relationship.</p>
-              <p class="text-xs">Try: "My partner is upset because I forgot our anniversary. What should I do?"</p>
+              <p>{tr().llm.chatPlaceholder}</p>
+              <p class="text-xs">{tr().llm.chatSuggestion}</p>
             </div>
           {/if}
           {#if loading}
@@ -194,7 +184,7 @@
           {/if}
         </div>
         <div class="flex gap-2">
-          <input type="text" class="input input-bordered flex-1" bind:value={input} placeholder="Ask anything..."
+          <input type="text" class="input input-bordered flex-1" bind:value={input} placeholder={tr().llm.inputPlaceholder}
                  onkeydown={(e: KeyboardEvent) => { if (e.key === 'Enter') send(); }} />
           <button onclick={send} class="btn btn-primary" disabled={!input.trim() || loading}><Send class="w-4 h-4" /></button>
         </div>
@@ -205,7 +195,7 @@
       {#each WIKI_TOPICS as topic}
         <div class="card bg-base-100 shadow hover:shadow-md transition-shadow">
           <div class="card-body">
-            <h3 class="font-semibold flex items-center gap-2">{topic.emoji} {topic.title}</h3>
+            <h3 class="font-semibold">{topic.title}</h3>
             <p class="text-sm text-text-soft leading-relaxed mt-1">{topic.tip}</p>
           </div>
         </div>
@@ -214,12 +204,12 @@
   {:else if tab === 'settings'}
     <div class="card bg-base-100 shadow">
       <div class="card-body space-y-4">
-        <h2 class="font-semibold flex items-center gap-2"><Key class="w-5 h-5" /> Setup — Bring Your Own API Key</h2>
-        <p class="text-sm text-text-soft">Your key stays 100% local. Pick any provider:</p>
+        <h2 class="font-semibold flex items-center gap-2"><Key class="w-5 h-5" /> {tr().llm.setupHeading}</h2>
+        <p class="text-sm text-text-soft">{tr().llm.setupDesc}</p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div class="form-control">
-            <label class="label"><span class="label-text">Provider</span></label>
+            <label class="label"><span class="label-text">{tr().llm.provider}</span></label>
             <select class="select" bind:value={provider} onchange={() => { model = PROVIDERS[provider]?.models[0] || model; }}>
               {#each Object.entries(PROVIDERS) as [k, v]}
                 <option value={k}>{v.name}</option>
@@ -227,7 +217,7 @@
             </select>
           </div>
           <div class="form-control">
-            <label class="label"><span class="label-text">Model</span></label>
+            <label class="label"><span class="label-text">{tr().llm.model}</span></label>
             <select class="select" bind:value={model}>
               {#each (PROVIDERS[provider]?.models || []) as m}
                 <option value={m}>{m}</option>
@@ -238,14 +228,13 @@
 
         {#if provider === 'ollama'}
           <div class="alert alert-info text-sm">
-            Ollama runs locally on your machine. <a href="https://ollama.com/download" target="_blank" rel="noopener" class="link">Download Ollama</a> first, then run <code class="bg-base-200 px-1 rounded">ollama pull {model}</code>.
-            Leave API key empty for local use. Base URL: http://localhost:11434
+            {tr().llm.ollamaInfo.replace('{model}', model)}
           </div>
         {:else}
           <div class="form-control">
             <label class="label">
-              <span class="label-text">API Key</span>
-              <a href={PROVIDERS[provider]?.getKey} target="_blank" rel="noopener" class="link text-xs">Get key →</a>
+              <span class="label-text">{tr().llm.apiKey}</span>
+              <a href={PROVIDERS[provider]?.getKey} target="_blank" rel="noopener" class="link text-xs">{tr().llm.getKey} →</a>
             </label>
             <input type="password" class="input input-bordered font-mono text-xs" bind:value={apiKey}
                    placeholder={provider === 'openai' ? 'sk-...' : provider === 'anthropic' ? 'sk-ant-...' : provider === 'google' ? 'AIza...' : 'key...'} />
@@ -254,14 +243,14 @@
 
         <div class="flex items-center justify-between text-sm">
           <div>
-            <p class="font-medium flex items-center gap-1"><Brain class="w-4 h-4" /> Context-aware (RAG)</p>
-            <p class="text-xs text-text-soft">Send food favorites, mood history & trigger words for personalized advice</p>
+            <p class="font-medium flex items-center gap-1"><Brain class="w-4 h-4" /> {tr().llm.contextAware} (RAG)</p>
+            <p class="text-xs text-text-soft">{tr().llm.contextDesc}</p>
           </div>
           <input type="checkbox" class="toggle" checked={useRAG} onchange={() => useRAG = !useRAG} />
         </div>
 
         <button onclick={saveConfig} class="btn btn-primary" disabled={!apiKey && provider !== 'ollama'}>
-          <Key class="w-4 h-4" /> Save & Start Chat
+          <Key class="w-4 h-4" /> {tr().llm.saveStart}
         </button>
       </div>
     </div>

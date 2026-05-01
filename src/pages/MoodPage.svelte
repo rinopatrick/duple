@@ -3,6 +3,7 @@
   import { Plus, Trash2 } from 'lucide-svelte';
   import { today, formatDate } from '../lib/utils/date';
   import dayjs from 'dayjs';
+  import { tr } from '../lib/i18n';
 
   let items: MoodLog[] = $state([]);
   let loaded = $state(false);
@@ -11,11 +12,11 @@
   let form = $state({ mood: 'biasa', trigger_penyebab: '', notes: '' });
 
   const MOODS = [
-    { value: 'senang', emoji: '😊', label: 'Senang' },
-    { value: 'biasa', emoji: '😐', label: 'Biasa' },
-    { value: 'kesel', emoji: '😤', label: 'Kesel' },
-    { value: 'sedih', emoji: '😢', label: 'Sedih' },
-    { value: 'gaenak', emoji: '🤒', label: 'Gak Enak Badan' },
+    { value: 'senang', emoji: '😊' },
+    { value: 'biasa', emoji: '😐' },
+    { value: 'kesel', emoji: '😤' },
+    { value: 'sedih', emoji: '😢' },
+    { value: 'gaenak', emoji: '🤒' },
   ];
 
   const MOOD_COLORS: Record<string, string> = {
@@ -55,23 +56,23 @@
 
 <div class="space-y-6">
   <div class="flex items-center justify-between">
-    <h1 class="text-2xl font-bold">😊 Mood Tracker</h1>
-    <button onclick={() => showForm = !showForm} class="btn btn-primary btn-sm"><Plus class="w-4 h-4" /> Catat Mood</button>
+    <h1 class="text-2xl font-bold">{tr().mood.heading}</h1>
+    <button onclick={() => showForm = !showForm} class="btn btn-primary btn-sm"><Plus class="w-4 h-4" /> {tr().mood.add}</button>
   </div>
 
   <div class="flex items-center gap-3 justify-center">
     <button onclick={() => changeDate(-1)} class="btn btn-sm btn-ghost">←</button>
     <span class="font-medium">{formatDate(selectedDate, 'dddd, DD MMM YYYY')}</span>
     <button onclick={() => changeDate(1)} class="btn btn-sm btn-ghost">→</button>
-    <button onclick={() => { selectedDate = today(); loadLogs(); }} class="btn btn-sm btn-outline">Hari Ini</button>
+    <button onclick={() => { selectedDate = today(); loadLogs(); }} class="btn btn-sm btn-outline">{tr().mood.today}</button>
   </div>
 
   {#if showForm}
     <div class="card bg-base-100 shadow">
       <div class="card-body">
-        <h3 class="card-title">Catat Mood</h3>
+        <h3 class="card-title">{tr().mood.addTitle}</h3>
         <div class="form-control">
-          <label class="label"><span class="label-text">Mood</span></label>
+          <label class="label"><span class="label-text">{tr().mood.mood}</span></label>
           <div class="flex gap-2 flex-wrap">
             {#each MOODS as mood}
               <button
@@ -81,22 +82,22 @@
                 onclick={() => form.mood = mood.value}
               >
                 <span class="text-2xl">{mood.emoji}</span>
-                <span class="text-sm">{mood.label}</span>
+                <span class="text-sm">{tr().mood.moods[mood.value] || mood.value}</span>
               </button>
             {/each}
           </div>
         </div>
         <div class="form-control">
-          <label class="label"><span class="label-text">Trigger / Penyebab</span></label>
-          <input type="text" class="input input-bordered" bind:value={form.trigger_penyebab} placeholder="Apa penyebabnya?" />
+          <label class="label"><span class="label-text">{tr().mood.trigger}</span></label>
+          <input type="text" class="input input-bordered" bind:value={form.trigger_penyebab} placeholder={tr().mood.triggerPlaceholder} />
         </div>
         <div class="form-control">
-          <label class="label"><span class="label-text">Catatan</span></label>
+          <label class="label"><span class="label-text">{tr().common.notes}</span></label>
           <textarea class="textarea textarea-bordered" rows="2" bind:value={form.notes}></textarea>
         </div>
         <div class="flex gap-2 mt-3">
-          <button onclick={add} class="btn btn-primary">Simpan</button>
-          <button onclick={() => showForm = false} class="btn btn-ghost">Batal</button>
+          <button onclick={add} class="btn btn-primary">{tr().common.save}</button>
+          <button onclick={() => showForm = false} class="btn btn-ghost">{tr().common.cancel}</button>
         </div>
       </div>
     </div>
@@ -107,7 +108,7 @@
   {:else if items.length === 0}
     <div class="text-center py-12 text-base-content/50">
       <p class="text-4xl mb-4">😶</p>
-      <p>Belum ada mood untuk tanggal ini.</p>
+      <p>{tr().mood.empty}</p>
     </div>
   {:else}
     <div class="space-y-2">
@@ -119,12 +120,12 @@
               <div class="flex items-center gap-3">
                 <span class="badge badge-sm">{item.waktu}</span>
                 <span class="text-2xl">{moodInfo?.emoji || '😐'}</span>
-                <span class="font-medium capitalize">{item.mood}</span>
+                <span class="font-medium">{tr().mood.moods[item.mood] || item.mood}</span>
               </div>
               <button onclick={() => remove(item.id)} class="btn btn-xs btn-ghost text-error"><Trash2 class="w-3 h-3" /></button>
             </div>
             {#if item.trigger_penyebab}
-              <p class="text-sm text-base-content/70 mt-1">Penyebab: {item.trigger_penyebab}</p>
+              <p class="text-sm text-base-content/70 mt-1">{tr().mood.causePrefix}{item.trigger_penyebab}</p>
             {/if}
             {#if item.notes}
               <p class="text-xs text-base-content/50">{item.notes}</p>

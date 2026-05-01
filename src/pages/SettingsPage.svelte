@@ -32,16 +32,16 @@
     const ok = await initSync();
     if (ok) {
       syncEnabled = true;
-      syncStatus = '✅ Connected to Supabase';
+      syncStatus = tr().settings.syncOk;
     } else {
       syncEnabled = false;
-      syncStatus = '❌ Connection failed — check URL & anon key';
+      syncStatus = tr().settings.syncFail;
     }
   }
 
   async function handleSync() {
     syncing = true;
-    syncStatus = 'Syncing...';
+    syncStatus = tr().settings.syncing;
     const result = await pushAllToCloud();
     syncStatus = result.success ? `✅ ${result.message}` : `❌ ${result.message}`;
     syncing = false;
@@ -72,9 +72,9 @@
       a.download = `duple-backup-${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
       URL.revokeObjectURL(url);
-      syncStatus = '📦 Backup downloaded';
+      syncStatus = tr().settings.exportOk;
     } catch (e) {
-      syncStatus = '❌ Export failed';
+      syncStatus = tr().settings.exportFail;
     }
     exporting = false;
   }
@@ -89,9 +89,9 @@
         const file = e.target.files[0];
         const text = await file.text();
         const backup = JSON.parse(text);
-        syncStatus = '✅ Imported! (restore will be available in next update)';
+        syncStatus = tr().settings.importOk;
       } catch (ex) {
-        syncStatus = '❌ Invalid backup file';
+        syncStatus = tr().settings.importFail;
       }
       importing = false;
     };
@@ -100,25 +100,25 @@
 </script>
 
 <div class="space-y-6 max-w-2xl">
-  <h1 class="text-2xl font-bold">⚙️ Settings</h1>
+  <h1 class="text-2xl font-bold">{tr().settings.heading}</h1>
 
   <div class="card bg-base-100 shadow">
     <div class="card-body">
       <h2 class="card-title flex items-center gap-2">
         {#if theme === 'light'}<Sun class="w-5 h-5" />{:else}<Moon class="w-5 h-5" />{/if}
-        Tampilan
+        {tr().settings.appearance}
       </h2>
       <div class="flex items-center justify-between mt-2">
         <div>
-          <p class="font-medium">Dark Mode</p>
-          <p class="text-sm text-base-content/50">Ubah tema aplikasi</p>
+          <p class="font-medium">{tr().settings.darkMode}</p>
+          <p class="text-sm text-base-content/50">{tr().settings.darkDesc}</p>
         </div>
         <input type="checkbox" class="toggle toggle-primary" checked={theme === 'dark'}
                onchange={() => setTheme(theme === 'dark' ? 'light' : 'dark')} />
       </div>
       <div class="flex items-center justify-between mt-3">
         <div>
-          <p class="font-medium">🌐 Language / Bahasa</p>
+          <p class="font-medium">{tr().settings.languageLabel}</p>
            <p class="text-sm text-base-content/50">{LANG_NAMES[locale] || locale.toUpperCase()}</p>
         </div>
          <select class="select text-sm w-auto" value={locale}
@@ -136,13 +136,13 @@
 
   <div class="card bg-base-100 shadow">
     <div class="card-body">
-      <h2 class="card-title flex items-center gap-2">🔧 Fitur</h2>
-      <p class="text-sm text-base-content/50 mb-2">Aktifkan/nonaktifkan fitur sesuai kebutuhan.</p>
+      <h2 class="card-title flex items-center gap-2">{tr().settings.features}</h2>
+      <p class="text-sm text-base-content/50 mb-2">{tr().settings.featureDesc}</p>
       <div class="space-y-3">
         <div class="flex items-center justify-between">
           <div>
-            <p class="font-medium">🩸 Siklus Haid Tracker</p>
-            <p class="text-xs text-base-content/50">Kalender siklus haid, daily log, prediksi. Nonaktifkan jika tidak diperlukan.</p>
+            <p class="font-medium">{tr().settings.cycleToggle}</p>
+            <p class="text-xs text-base-content/50">{tr().settings.cycleDesc}</p>
           </div>
           <input type="checkbox" class="toggle-lg" checked={getFeature('siklus')}
                  onchange={() => setFeature('siklus', !getFeature('siklus'))} />
@@ -153,39 +153,38 @@
 
   <div class="card bg-base-100 shadow">
     <div class="card-body">
-      <h2 class="card-title flex items-center gap-2"><Cloud class="w-5 h-5" /> Cloud Sync (BYOD)</h2>
+      <h2 class="card-title flex items-center gap-2"><Cloud class="w-5 h-5" /> {tr().settings.cloud}</h2>
       <p class="text-sm text-base-content/50 mb-3">
-        Pakai Supabase gratis kamu sendiri untuk sinkronisasi antar device.
-        <a href="https://supabase.com" target="_blank" rel="noopener" class="link">Buat akun gratis</a> → copy URL + anon key → paste di sini.
+        {tr().settings.cloudDesc}
       </p>
 
       <ol class="text-sm text-base-content/70 space-y-2 mb-4 ml-4 list-decimal">
-        <li>Buat akun dan project baru di <a href="https://supabase.com" target="_blank" rel="noopener" class="link">supabase.com</a> (gratis)</li>
-        <li>Buka <strong>SQL Editor</strong> → copy-paste <a href={MIGRATION_SQL_URL} target="_blank" rel="noopener" class="link">migration SQL ini</a> → Run</li>
-        <li>Buka <strong>Project Settings → API</strong> → copy Project URL & anon key</li>
-        <li>Paste di bawah → Save → Sync</li>
+        <li>{tr().settings.cloudSteps[0]}</li>
+        <li>{tr().settings.cloudSteps[1]}</li>
+        <li>{tr().settings.cloudSteps[2]}</li>
+        <li>{tr().settings.cloudSteps[3]}</li>
       </ol>
 
       <div class="space-y-3">
         <div class="form-control">
-          <label class="label"><span class="label-text">Supabase Project URL</span></label>
+          <label class="label"><span class="label-text">{tr().settings.supabaseUrl}</span></label>
           <input type="url" class="input input-bordered font-mono text-xs" bind:value={supabaseUrl}
                  placeholder="https://xxxxxxxx.supabase.co" />
         </div>
         <div class="form-control">
-          <label class="label"><span class="label-text">Anon Key</span></label>
+          <label class="label"><span class="label-text">{tr().settings.supabaseKey}</span></label>
           <input type="password" class="input input-bordered font-mono text-xs" bind:value={supabaseKey}
                  placeholder="eyJhbGci..." />
         </div>
         <div class="flex gap-2">
           <button onclick={saveSupabaseConfig} class="btn btn-primary btn-sm">
-            <Check class="w-4 h-4" /> Save & Connect
+            <Check class="w-4 h-4" /> {tr().settings.saveConnect}
           </button>
           <button onclick={handleSync} class="btn btn-secondary btn-sm" disabled={!syncEnabled || syncing}>
             {#if syncing}
-              <span class="loading loading-spinner loading-sm"></span> Syncing...
+              <span class="loading loading-spinner loading-sm"></span> {tr().settings.syncing}
             {:else}
-              <Upload class="w-4 h-4" /> Sync Now
+              <Upload class="w-4 h-4" /> {tr().settings.syncNow}
             {/if}
           </button>
         </div>
@@ -198,14 +197,14 @@
 
   <div class="card bg-base-100 shadow">
     <div class="card-body">
-      <h2 class="card-title flex items-center gap-2"><Download class="w-5 h-5" /> Backup & Restore</h2>
-      <p class="text-sm text-base-content/50 mb-2">Export semua data ke file JSON atau import dari backup sebelumnya.</p>
+      <h2 class="card-title flex items-center gap-2"><Download class="w-5 h-5" /> {tr().settings.backup}</h2>
+      <p class="text-sm text-base-content/50 mb-2">{tr().settings.backupDesc}</p>
       <div class="flex gap-2">
         <button onclick={exportData} class="btn btn-outline btn-sm" disabled={exporting}>
-          <Download class="w-4 h-4" /> Export Backup
+          <Download class="w-4 h-4" /> {tr().settings.exportBackup}
         </button>
         <button onclick={importData} class="btn btn-outline btn-sm" disabled={importing}>
-          <Upload class="w-4 h-4" /> Import Backup
+          <Upload class="w-4 h-4" /> {tr().settings.importBackup}
         </button>
       </div>
     </div>
@@ -213,12 +212,12 @@
 
   <div class="card bg-base-100 shadow">
     <div class="card-body">
-      <h2 class="card-title flex items-center gap-2"><Database class="w-5 h-5" /> Data</h2>
-      <p class="text-sm text-base-content/50">Data disimpan secara lokal. Desktop: SQLite, Browser: IndexedDB.</p>
+      <h2 class="card-title flex items-center gap-2"><Database class="w-5 h-5" /> {tr().settings.data}</h2>
+      <p class="text-sm text-base-content/50">{tr().settings.dataDesc}</p>
       <div class="stats shadow mt-3">
         <div class="stat">
-          <div class="stat-title">Mode</div>
-          <div class="stat-value text-sm font-mono">{typeof window !== 'undefined' && '__TAURI_INTERNALS__' in (window as any) ? 'Desktop (SQLite)' : 'Browser (IndexedDB)'}</div>
+          <div class="stat-title">{tr().settings.mode}</div>
+          <div class="stat-value text-sm font-mono">{typeof window !== 'undefined' && '__TAURI_INTERNALS__' in (window as any) ? tr().settings.modeDesktop : tr().settings.modeBrowser}</div>
         </div>
       </div>
     </div>
@@ -226,10 +225,10 @@
 
   <div class="card bg-base-100 shadow">
     <div class="card-body">
-      <h2 class="card-title">ℹ️ Tentang</h2>
+      <h2 class="card-title">{tr().settings.about}</h2>
       <div class="text-sm space-y-1">
-        <p><strong>Duple</strong> v0.1.0</p>
-        <p>Your relationship sidekick — track, remember, and care better.</p>
+        <p><strong>{tr().app.name}</strong> v0.1.0</p>
+        <p>{tr().app.tagline}</p>
         <p class="text-base-content/50">🦀 Tauri + ⚡ Svelte + 🎨 TailwindCSS + ☁️ Supabase</p>
       </div>
     </div>

@@ -2,6 +2,7 @@
   import { getAllMakanan, type MakananFavorit } from '../lib/db/makanan';
   import { getAllRencana, type RencanaTempat } from '../lib/db/rencana';
   import { getAllMoodLogs, type MoodLog } from '../lib/db/mood';
+  import { tr } from '../lib/i18n';
   import { setRoute } from '../lib/stores/app.svelte';
   import { Shuffle, Sparkles, MapPin, Utensils, Heart } from 'lucide-svelte';
 
@@ -11,6 +12,8 @@
   let pickedPlace: RencanaTempat | null = $state(null);
   let mood: string = $state('');
   let loaded = $state(false);
+
+  const moodLabels = $derived(tr().dategenerator.moodLabels);
 
   $effect(() => { load(); });
 
@@ -37,7 +40,7 @@
 
 <div class="space-y-6">
   <div class="flex items-center justify-between">
-    <h1 class="text-2xl font-bold">🎲 Date Idea Generator</h1>
+    <h1 class="text-2xl font-bold">{tr().dategenerator.heading}</h1>
   </div>
 
   {#if !loaded}
@@ -46,19 +49,19 @@
     {#if makanan.length === 0 && places.length === 0}
       <div class="text-center py-12 text-base-content/50">
         <p class="text-4xl mb-4">🎲</p>
-        <p class="mb-2">Belum cukup data buat generate ide.</p>
+        <p class="mb-2">{tr().dategenerator.empty}</p>
         <div class="flex gap-2 justify-center">
-          <button onclick={() => setRoute('makanan')} class="btn btn-primary btn-sm">+ Tambah Makanan</button>
-          <button onclick={() => setRoute('rencana')} class="btn btn-secondary btn-sm">+ Tambah Tempat</button>
+          <button onclick={() => setRoute('makanan')} class="btn btn-primary btn-sm">{tr().dategenerator.addFood}</button>
+          <button onclick={() => setRoute('rencana')} class="btn btn-secondary btn-sm">{tr().dategenerator.addPlace}</button>
         </div>
       </div>
     {:else}
       <div class="text-center">
         <button onclick={generate} class="btn btn-primary btn-lg">
-          <Shuffle class="w-5 h-5" /> Generate Date Idea
+          <Shuffle class="w-5 h-5" /> {tr().dategenerator.generate}
         </button>
         <p class="text-xs text-base-content/50 mt-2">
-          {makanan.length} makanan & {places.length} tempat tersedia
+          {tr().dategenerator.available.replace('{nFood}', String(makanan.length)).replace('{nPlace}', String(places.length))}
         </p>
       </div>
 
@@ -67,7 +70,7 @@
           <div class="card bg-gradient-to-br from-primary/10 to-secondary/10 shadow border border-primary/20">
             <div class="card-body text-center">
               <Sparkles class="w-8 h-8 mx-auto text-primary" />
-              <p class="text-lg font-bold capitalize mt-2">{mood} date night ✨</p>
+              <p class="text-lg font-bold capitalize mt-2">{moodLabels[mood] || mood} date night ✨</p>
             </div>
           </div>
 
@@ -91,10 +94,10 @@
                 </div>
                 <div class="flex gap-2 mt-3">
                   <a href={getMapUrl(pickedPlace)} target="_blank" rel="noopener" class="btn btn-outline btn-sm flex-1">
-                    🗺️ Buka di Maps
+                    {tr().dategenerator.openMaps}
                   </a>
                   <a href={getMapUrl(pickedPlace).replace('/place/', '/dir/').replace('/search/', '/dir/?api=1&destination=')} target="_blank" rel="noopener" class="btn btn-outline btn-sm flex-1">
-                    🧭 Petunjuk Arah
+                    {tr().dategenerator.directions}
                   </a>
                 </div>
               </div>
@@ -125,14 +128,14 @@
 
           <div class="text-center">
             <button onclick={generate} class="btn btn-ghost">
-              <Shuffle class="w-4 h-4" /> Coba Lagi
+              <Shuffle class="w-4 h-4" /> {tr().dategenerator.retry}
             </button>
           </div>
         </div>
       {:else}
         <div class="text-center py-8 text-base-content/50">
           <p class="text-4xl mb-2">🎲</p>
-          <p>Klik tombol di atas buat generate ide date random!</p>
+          <p>{tr().dategenerator.prompt}</p>
         </div>
       {/if}
     {/if}

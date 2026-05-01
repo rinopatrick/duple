@@ -1,6 +1,7 @@
 <script lang="ts">
   import { getAllMakanan, createMakanan, updateMakanan, deleteMakanan, type MakananFavorit } from '../lib/db/makanan';
   import { Plus, Trash2, Edit3, Star } from 'lucide-svelte';
+  import { tr } from '../lib/i18n';
 
   let items: MakananFavorit[] = $state([]);
   let loaded = $state(false);
@@ -42,7 +43,7 @@
   }
 
   async function remove(id: number) {
-    if (confirm('Hapus makanan ini?')) {
+    if (confirm(tr().makanan.deleteConfirm)) {
       await deleteMakanan(id);
       await loadData();
     }
@@ -63,35 +64,35 @@
 
 <div class="space-y-6">
   <div class="flex items-center justify-between">
-    <h1 class="text-2xl font-bold">🍕 Makanan & Minuman Favorit</h1>
-    <button onclick={openAdd} class="btn btn-primary btn-sm"><Plus class="w-4 h-4" /> Tambah</button>
+    <h1 class="text-2xl font-bold">{tr().makanan.heading}</h1>
+    <button onclick={openAdd} class="btn btn-primary btn-sm"><Plus class="w-4 h-4" /> {tr().makanan.add}</button>
   </div>
 
   {#if showForm}
     <div class="card bg-base-100 shadow">
       <div class="card-body">
-        <h3 class="card-title">{editId ? 'Edit' : 'Tambah'} Makanan Favorit</h3>
+        <h3 class="card-title">{editId ? tr().makanan.editTitle : tr().makanan.addTitle}</h3>
         <div class="form-control">
-          <label class="label"><span class="label-text">Nama</span></label>
-          <input type="text" class="input input-bordered" bind:value={form.nama} placeholder="Nama makanan/minuman" />
+          <label class="label"><span class="label-text">{tr().makanan.name}</span></label>
+          <input type="text" class="input input-bordered" bind:value={form.nama} placeholder={tr().makanan.namePlaceholder} />
         </div>
         <div class="form-control">
-          <label class="label"><span class="label-text">Kategori</span></label>
+          <label class="label"><span class="label-text">{tr().makanan.category}</span></label>
           <select class="select select-bordered" bind:value={form.kategori}>
             {#each KATEGORI as k}
-              <option value={k}>{k}</option>
+              <option value={k}>{tr().makanan.categories[k] || k}</option>
             {/each}
           </select>
         </div>
         <div class="form-control">
-          <label class="label"><span class="label-text">Rating ({renderStars(form.rating)})</span></label>
+          <label class="label"><span class="label-text">{tr().makanan.rating} ({renderStars(form.rating)})</span></label>
           <input type="range" min="1" max="5" class="range range-primary" bind:value={form.rating} />
           <div class="flex w-full justify-between px-2 text-xs">
             <span>|</span><span>|</span><span>|</span><span>|</span><span>|</span>
           </div>
         </div>
         <div class="form-control">
-          <label class="label"><span class="label-text">Cocok saat mood</span></label>
+          <label class="label"><span class="label-text">{tr().makanan.moodTags}</span></label>
           <div class="flex gap-2 flex-wrap">
             {#each MOODS as mood}
               <button
@@ -99,17 +100,17 @@
                 class:btn-primary={selectedMoods.includes(mood)}
                 class:btn-outline={!selectedMoods.includes(mood)}
                 onclick={() => toggleMood(mood)}
-              >{mood}</button>
+              >{tr().makanan.moods[mood] || mood}</button>
             {/each}
           </div>
         </div>
         <div class="form-control">
-          <label class="label"><span class="label-text">Catatan</span></label>
+          <label class="label"><span class="label-text">{tr().common.notes}</span></label>
           <textarea class="textarea textarea-bordered" rows="2" bind:value={form.notes}></textarea>
         </div>
         <div class="flex gap-2 mt-4">
-          <button onclick={save} class="btn btn-primary">Simpan</button>
-          <button onclick={() => showForm = false} class="btn btn-ghost">Batal</button>
+          <button onclick={save} class="btn btn-primary">{tr().common.save}</button>
+          <button onclick={() => showForm = false} class="btn btn-ghost">{tr().common.cancel}</button>
         </div>
       </div>
     </div>
@@ -120,7 +121,7 @@
   {:else if items.length === 0}
     <div class="text-center py-12 text-base-content/50">
       <p class="text-4xl mb-4">🍽️</p>
-      <p>Belum ada makanan favorit. Tambahin dulu!</p>
+      <p>{tr().makanan.empty}</p>
     </div>
   {:else}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -130,14 +131,14 @@
             <div class="flex justify-between items-start">
               <div>
                 <h3 class="font-bold text-lg">{item.nama}</h3>
-                <span class="badge badge-sm">{item.kategori}</span>
+                <span class="badge badge-sm">{tr().makanan.categories[item.kategori] || item.kategori}</span>
               </div>
               <div class="text-yellow-500 text-sm">{renderStars(item.rating)}</div>
             </div>
             {#if item.mood_tags && item.mood_tags !== '[]'}
               <div class="flex gap-1 flex-wrap mt-2">
                 {#each JSON.parse(item.mood_tags) as tag}
-                  <span class="badge badge-xs badge-outline">{tag}</span>
+                  <span class="badge badge-xs badge-outline">{tr().makanan.moods[tag] || tag}</span>
                 {/each}
               </div>
             {/if}
