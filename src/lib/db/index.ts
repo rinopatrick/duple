@@ -6,6 +6,8 @@ export { getAllLogMakanan, createLogMakanan, deleteLogMakanan } from './log_maka
 export type { LogMakanan } from './log_makanan';
 export { getAllSiklus, createSiklus, updateSiklus, deleteSiklus, getLastSiklus } from './siklus';
 export type { SiklusHaid } from './siklus';
+export { getAllHaidHarian, setHaidHarian, deleteHaidHarian, getHaidRange } from './haid_harian';
+export type { HaidHarian } from './haid_harian';
 export { getAllMoodLogs, createMoodLog, deleteMoodLog } from './mood';
 export type { MoodLog } from './mood';
 export { getAllRencana, createRencana, updateRencana, deleteRencana } from './rencana';

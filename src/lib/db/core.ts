@@ -11,6 +11,7 @@ class PacarDB extends Dexie {
   makanan_favorit!: Table<any>;
   log_makanan!: Table<any>;
   siklus_haid!: Table<any>;
+  haid_harian!: Table<any>;
   mood_log!: Table<any>;
   rencana_tempat!: Table<any>;
   momen!: Table<any>;
@@ -26,6 +27,7 @@ class PacarDB extends Dexie {
       makanan_favorit: '++id, kategori, rating',
       log_makanan: '++id, tanggal, waktu',
       siklus_haid: '++id, tgl_mulai',
+      haid_harian: '++id, &tanggal',
       mood_log: '++id, tanggal',
       rencana_tempat: '++id, status, kategori',
       momen: '++id, tanggal, kategori',
@@ -115,6 +117,8 @@ class DexieDatabase {
         Object.assign(data, { tanggal: params[0], waktu: params[1], makanan: params[2], mood_sebelum: params[3], mood_sesudah: params[4], notes: params[5], created_at: now });
       } else if (table === 'siklus_haid') {
         Object.assign(data, { tgl_mulai: params[0], tgl_selesai: params[1], flow_intensity: params[2], symptoms: params[3], notes: params[4], created_at: now });
+      } else if (table === 'haid_harian') {
+        Object.assign(data, { tanggal: params[0], status: params[1], flow_level: params[2], created_at: now });
       } else if (table === 'mood_log') {
         Object.assign(data, { tanggal: params[0], waktu: params[1], mood: params[2], trigger_penyebab: params[3], notes: params[4], created_at: now });
       } else if (table === 'rencana_tempat') {
@@ -228,6 +232,7 @@ async function initSchema(db: any) {
       await db.execute(stmt);
     }
     try { await db.execute("ALTER TABLE rencana_tempat ADD COLUMN maps_url TEXT DEFAULT ''"); } catch (_) {}
+    try { await db.execute("CREATE TABLE IF NOT EXISTS haid_harian (id INTEGER PRIMARY KEY AUTOINCREMENT, tanggal TEXT NOT NULL UNIQUE, status TEXT NOT NULL DEFAULT 'haid', flow_level INTEGER DEFAULT 3, symptoms TEXT DEFAULT '[]', notes TEXT DEFAULT '', created_at TEXT DEFAULT (datetime('now','localtime')))"); } catch (_) {}
   }
 }
 

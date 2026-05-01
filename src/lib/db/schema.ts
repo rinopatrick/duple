@@ -31,6 +31,16 @@ CREATE TABLE IF NOT EXISTS siklus_haid (
   created_at TEXT DEFAULT (datetime('now','localtime'))
 );
 
+CREATE TABLE IF NOT EXISTS haid_harian (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  tanggal TEXT NOT NULL UNIQUE,
+  status TEXT NOT NULL DEFAULT 'haid',
+  flow_level INTEGER DEFAULT 3,
+  symptoms TEXT DEFAULT '[]',
+  notes TEXT DEFAULT '',
+  created_at TEXT DEFAULT (datetime('now','localtime'))
+);
+
 CREATE TABLE IF NOT EXISTS mood_log (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   tanggal TEXT NOT NULL,
