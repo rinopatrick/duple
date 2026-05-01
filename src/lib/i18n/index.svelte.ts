@@ -1,5 +1,3 @@
-const translations: Record<string, any> = null as any;
-
 export const en = {
   app: { name: 'Duple', tagline: 'Your relationship sidekick' },
   nav: {
@@ -185,23 +183,32 @@ export type Translations = typeof en;
 
 const LOCALE_MAP: Record<string, Translations> = { en, id, es, fr, pt, jp };
 
-// Simple reactive locale using module-level variable + custom event
-let _current: Locale = (typeof localStorage !== 'undefined' ? (localStorage.getItem('duple_locale') as Locale) : null) || 'en';
-if (typeof localStorage !== 'undefined' && !localStorage.getItem('duple_locale')) {
-  if (typeof navigator !== 'undefined') {
-    const lang = navigator.language?.toLowerCase() || '';
-    if (lang.startsWith('id')) _current = 'id';
-    else if (lang.startsWith('es')) _current = 'es';
-    else if (lang.startsWith('fr')) _current = 'fr';
-    else if (lang.startsWith('pt')) _current = 'pt';
-    else if (lang.startsWith('ja')) _current = 'jp';
+let _initial: Locale = 'en';
+let _detected = false;
+if (typeof localStorage !== 'undefined') {
+  const saved = localStorage.getItem('duple_locale') as Locale;
+  if (saved && saved in LOCALE_MAP) {
+    _initial = saved;
+    _detected = true;
   }
 }
+if (!_detected && typeof navigator !== 'undefined') {
+  const lang = navigator.language?.toLowerCase() || '';
+  if (lang.startsWith('id')) _initial = 'id';
+  else if (lang.startsWith('es')) _initial = 'es';
+  else if (lang.startsWith('fr')) _initial = 'fr';
+  else if (lang.startsWith('pt')) _initial = 'pt';
+  else if (lang.startsWith('ja')) _initial = 'jp';
+}
+
+let _current: Locale = $state(_initial);
 
 export function getLocale(): Locale { return _current; }
+export function tr(): Translations { return LOCALE_MAP[_current] || en; }
+export function t(): Translations { return tr(); }
+
 export function setLocale(l: Locale) {
   _current = l;
   if (typeof localStorage !== 'undefined') localStorage.setItem('duple_locale', l);
   if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('duple-locale-changed', { detail: l }));
 }
-export function t(): Translations { return LOCALE_MAP[_current] || en; }

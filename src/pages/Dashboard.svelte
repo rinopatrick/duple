@@ -14,15 +14,7 @@
   import { formatDate, today, daysBetween } from '../lib/utils/date';
   import dayjs from 'dayjs';
   import { Bell, Heart } from 'lucide-svelte';
-  import { t } from '../lib/i18n/index.svelte';
-
-  let tr = $state(t());
-
-  $effect(() => {
-    function onLocale() { tr = t(); }
-    window.addEventListener('duple-locale-changed', onLocale);
-    return () => window.removeEventListener('duple-locale-changed', onLocale);
-  });
+  import { tr } from '../lib/i18n/index.svelte';
 
   let makananCount = $state(0);
   let rencanaWishlist = $state(0);
@@ -110,31 +102,31 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       <div class="card bg-base-100 shadow">
         <div class="card-body">
-          <h3 class="text-sm text-base-content/60">{tr.dashboard.favorites}</h3>
+          <h3 class="text-sm text-base-content/60">{tr().dashboard.favorites}</h3>
           <p class="text-3xl font-bold text-primary">{makananCount}</p>
-          <button onclick={() => setRoute('makanan')} class="btn btn-sm btn-ghost mt-2">{tr.dashboard.seeAll}</button>
+          <button onclick={() => setRoute('makanan')} class="btn btn-sm btn-ghost mt-2">{tr().dashboard.seeAll}</button>
         </div>
       </div>
       <div class="card bg-base-100 shadow">
         <div class="card-body">
-          <h3 class="text-sm text-base-content/60">{tr.dashboard.wishlist}</h3>
+          <h3 class="text-sm text-base-content/60">{tr().dashboard.wishlist}</h3>
           <p class="text-3xl font-bold text-secondary">{rencanaWishlist}</p>
-          <button onclick={() => setRoute('rencana')} class="btn btn-sm btn-ghost mt-2">{tr.dashboard.seeAll}</button>
+          <button onclick={() => setRoute('rencana')} class="btn btn-sm btn-ghost mt-2">{tr().dashboard.seeAll}</button>
         </div>
       </div>
       <div class="card bg-base-100 shadow">
         <div class="card-body">
-          <h3 class="text-sm text-base-content/60">{tr.dashboard.gifts}</h3>
+          <h3 class="text-sm text-base-content/60">{tr().dashboard.gifts}</h3>
           <p class="text-3xl font-bold text-accent">{wishlistActive}</p>
-          <button onclick={() => setRoute('wishlist')} class="btn btn-sm btn-ghost mt-2">{tr.dashboard.seeAll}</button>
+          <button onclick={() => setRoute('wishlist')} class="btn btn-sm btn-ghost mt-2">{tr().dashboard.seeAll}</button>
         </div>
       </div>
       {#if getFeature('siklus')}
       <div class="card bg-base-100 shadow">
         <div class="card-body">
-          <h3 class="text-sm text-base-content/60">{tr.dashboard.prediction}</h3>
+          <h3 class="text-sm text-base-content/60">{tr().dashboard.prediction}</h3>
           <p class="text-2xl font-bold text-error">{prediksiSiklus()}</p>
-          <button onclick={() => setRoute('siklus')} class="btn btn-sm btn-ghost mt-2">{tr.dashboard.seeAll}</button>
+          <button onclick={() => setRoute('siklus')} class="btn btn-sm btn-ghost mt-2">{tr().dashboard.seeAll}</button>
         </div>
       </div>
       {/if}

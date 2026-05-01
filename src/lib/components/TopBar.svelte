@@ -4,15 +4,9 @@
   import { Moon, Sun, PanelLeft, Globe, Search, X } from 'lucide-svelte';
 
   const theme = $derived(getTheme());
-  let locale = $state(getLocale());
+  let locale = $derived(getLocale());
   let searchOpen = $state(false);
   let query = $state('');
-
-  $effect(() => {
-    function onLocale() { locale = getLocale(); }
-    window.addEventListener('duple-locale-changed', onLocale);
-    return () => window.removeEventListener('duple-locale-changed', onLocale);
-  });
 
   const LANG_LABELS: Record<Locale, string> = { en: 'EN', id: 'ID', es: 'ES', fr: 'FR', pt: 'PT', jp: '日本語' };
   const LANGS: Locale[] = ['en', 'id', 'es', 'fr', 'pt', 'jp'];

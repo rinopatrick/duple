@@ -1,15 +1,8 @@
 <script lang="ts">
   import { UtensilsCrossed, Calendar, Lightbulb, Lock } from 'lucide-svelte';
-  import { t } from '../i18n/index.svelte';
+  import { tr } from '../i18n/index.svelte';
 
   let { onStart }: { onStart: () => void } = $props();
-  let tr = $state(t());
-
-  $effect(() => {
-    function onLocale() { tr = t(); }
-    window.addEventListener('duple-locale-changed', onLocale);
-    return () => window.removeEventListener('duple-locale-changed', onLocale);
-  });
 </script>
 
 <div class="min-h-screen flex flex-col items-center justify-center p-6 text-center" style="background: var(--bg)">
@@ -19,7 +12,7 @@
         <span class="text-white text-2xl font-bold">D</span>
       </div>
       <h1 class="text-4xl font-bold" style="color: var(--text)">Duple</h1>
-      <p class="text-lg" style="color: var(--text-muted)">{tr.landing.title}</p>
+      <p class="text-lg" style="color: var(--text-muted)">{tr().landing.title}</p>
     </div>
 
     <div class="space-y-4 text-left">
@@ -28,8 +21,8 @@
           <UtensilsCrossed class="w-5 h-5" style="color: var(--primary-text)" />
         </div>
         <div>
-          <p class="font-semibold" style="color: var(--text)">{tr.landing.f1t}</p>
-          <p class="text-sm" style="color: var(--text-muted)">{tr.landing.f1d}</p>
+          <p class="font-semibold" style="color: var(--text)">{tr().landing.f1t}</p>
+          <p class="text-sm" style="color: var(--text-muted)">{tr().landing.f1d}</p>
         </div>
       </div>
       <div class="flex items-start gap-3">
@@ -37,8 +30,8 @@
           <Calendar class="w-5 h-5" style="color: var(--error-text)" />
         </div>
         <div>
-          <p class="font-semibold" style="color: var(--text)">{tr.landing.f2t}</p>
-          <p class="text-sm" style="color: var(--text-muted)">{tr.landing.f2d}</p>
+          <p class="font-semibold" style="color: var(--text)">{tr().landing.f2t}</p>
+          <p class="text-sm" style="color: var(--text-muted)">{tr().landing.f2d}</p>
         </div>
       </div>
       <div class="flex items-start gap-3">
@@ -46,8 +39,8 @@
           <Lightbulb class="w-5 h-5" style="color: var(--warning-text)" />
         </div>
         <div>
-          <p class="font-semibold" style="color: var(--text)">{tr.landing.f3t}</p>
-          <p class="text-sm" style="color: var(--text-muted)">{tr.landing.f3d}</p>
+          <p class="font-semibold" style="color: var(--text)">{tr().landing.f3t}</p>
+          <p class="text-sm" style="color: var(--text-muted)">{tr().landing.f3d}</p>
         </div>
       </div>
       <div class="flex items-start gap-3">
@@ -55,17 +48,17 @@
           <Lock class="w-5 h-5" style="color: var(--secondary-text)" />
         </div>
         <div>
-          <p class="font-semibold" style="color: var(--text)">{tr.landing.f4t}</p>
-          <p class="text-sm" style="color: var(--text-muted)">{tr.landing.f4d}</p>
+          <p class="font-semibold" style="color: var(--text)">{tr().landing.f4t}</p>
+          <p class="text-sm" style="color: var(--text-muted)">{tr().landing.f4d}</p>
         </div>
       </div>
     </div>
 
     <div class="space-y-3">
       <button onclick={onStart} class="btn btn-primary btn-lg w-full" style="font-size:1.125rem; padding: 1rem 2rem;">
-        {tr.landing.start}
+        {tr().landing.start}
       </button>
-      <p class="text-xs" style="color: var(--text-soft)">{tr.landing.sub}</p>
+      <p class="text-xs" style="color: var(--text-soft)">{tr().landing.sub}</p>
     </div>
   </div>
 </div>

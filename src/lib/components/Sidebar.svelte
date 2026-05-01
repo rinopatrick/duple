@@ -3,17 +3,10 @@
   import type { Route } from '../stores/app.svelte';
   import * as Icons from 'lucide-svelte';
   import { ChevronDown, MoreHorizontal } from 'lucide-svelte';
-  import { getLocale, t } from '../i18n/index.svelte';
+  import { tr } from '../i18n/index.svelte';
 
-  let locale = $state(getLocale());
   let currentRoute = $derived(getRoute());
   let showMore = $state(false);
-
-  $effect(() => {
-    function onLocale() { locale = getLocale(); }
-    window.addEventListener('duple-locale-changed', onLocale);
-    return () => window.removeEventListener('duple-locale-changed', onLocale);
-  });
 
   function iconComponent(name: string): any {
     return (Icons as any)[name] || Icons.HelpCircle;
@@ -24,10 +17,6 @@
       if (item.route === 'siklus') return getFeature('siklus');
       return true;
     });
-  }
-
-  function label(item: { label: string; route: Route }): string {
-    return ((locale ? t() : t()).nav as any)[item.route] || item.label;
   }
 
   const mainItems = $derived(filter(NAV_MAIN));
@@ -57,7 +46,7 @@
         style={currentRoute === item.route ? 'background: var(--primary); color: var(--primary-text)' : 'color: var(--text)'}
       >
         <IconComp class="w-4.5 h-4.5 flex-shrink-0" />
-        <span class="text-sm font-medium">{item.label}</span>
+        <span class="text-sm font-medium">{(tr().nav as any)[item.route] || item.label}</span>
       </button>
     {/each}
 
@@ -85,7 +74,7 @@
             style={currentRoute === item.route ? 'background: var(--primary); color: var(--primary-text)' : 'color: var(--text)'}
           >
             <IconComp class="w-4 h-4 flex-shrink-0 opacity-70" />
-            <span class="text-xs">{item.label}</span>
+            <span class="text-xs">{(tr().nav as any)[item.route] || item.label}</span>
           </button>
         {/each}
       </div>
