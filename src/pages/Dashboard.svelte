@@ -4,6 +4,8 @@
   import { getLastSiklus } from '../lib/db/siklus';
   import { getAllMoodLogs } from '../lib/db/mood';
   import { generateRekomendasi, type RekomendasiResult } from '../lib/engine/rekomendasi';
+  import { getReminders, type Reminder } from '../lib/engine/reminders';
+  import { Bell } from 'lucide-svelte';
   import type { MakananFavorit } from '../lib/db/makanan';
   import type { RencanaTempat } from '../lib/db/rencana';
   import type { Momen } from '../lib/db/momen';
@@ -23,6 +25,7 @@
   let rekomendasi: RekomendasiResult | null = $state(null);
   let loaded = $state(false);
   let error = $state('');
+  let reminders: Reminder[] = $state([]);
 
   $effect(() => {
     loadDashboard();
@@ -46,6 +49,7 @@
       lastSiklus = siklus;
       moodToday = moods.length > 0 ? moods[moods.length - 1] : null;
       rekomendasi = rec;
+      reminders = await getReminders();
       loaded = true;
     } catch (e) {
       error = String(e);
@@ -127,6 +131,26 @@
       </div>
       {/if}
     </div>
+
+    {#if reminders.length > 0}
+    <div class="card bg-base-100 shadow">
+      <div class="card-body">
+        <h2 class="card-title flex items-center gap-2"><Bell class="w-5 h-5" /> Reminders</h2>
+        <div class="flex gap-2 flex-wrap">
+          {#each reminders as r}
+            <div class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm {r.priority === 'high' ? 'bg-error/10' : r.priority === 'medium' ? 'bg-warning/10' : 'bg-base-200'}"
+            >
+              <span>{r.icon}</span>
+              <div>
+                <span class="font-medium">{r.title}</span>
+                <span class="text-xs text-text-soft ml-2">({r.description})</span>
+              </div>
+            </div>
+          {/each}
+        </div>
+      </div>
+    </div>
+    {/if}
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div class="card bg-base-100 shadow lg:col-span-2">

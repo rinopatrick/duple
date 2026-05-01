@@ -1,5 +1,6 @@
 <script lang="ts">
   import { setRoute, getRoute, NAV_ITEMS, getFeature } from '../stores/app.svelte';
+  import { getLocale, t } from '../i18n';
   import type { Route } from '../stores/app.svelte';
 
   const currentRoute = $derived(getRoute());
@@ -9,6 +10,11 @@
       if (item.route === 'siklus') return getFeature('siklus');
       return true;
     });
+  }
+
+  function label(item: typeof NAV_ITEMS[number]): string {
+    const translations = t().nav;
+    return (translations as any)[item.route] || item.label;
   }
 
   const visibleItems = $derived(filterItems(NAV_ITEMS));
@@ -35,7 +41,7 @@
         class:font-semibold={currentRoute === item.route}
       >
         <span class="text-lg">{item.icon}</span>
-        <span class="text-sm">{item.label}</span>
+        <span class="text-sm">{label(item)}</span>
       </button>
     {/each}
   </nav>

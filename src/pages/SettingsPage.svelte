@@ -1,6 +1,7 @@
 <script lang="ts">
   import { getSetting, setSetting } from '../lib/db/settings';
   import { getTheme, setTheme, getFeature, setFeature, loadFeatures } from '../lib/stores/app.svelte';
+  import { getLocale, setLocale, t, loadLocale } from '../lib/i18n';
   import { initSync, pushAllToCloud, isSyncEnabled, checkSyncStatus } from '../lib/sync/supabase';
   import { getAllMakanan, getAllLogMakanan, getAllSiklus, getAllMoodLogs, getAllRencana, getAllMomen, getAllWishlist, getAllUkuran, getAllTriggerWords, getAllOrang } from '../lib/db';
   import { Sun, Moon, Database, Cloud, CloudOff, Upload, Download, Check } from 'lucide-svelte';
@@ -16,7 +17,7 @@
 
   const MIGRATION_SQL_URL = 'https://raw.githubusercontent.com/rinopatrick/duple/master/supabase_migration.sql';
 
-  $effect(() => { loadSettings(); loadFeatures(); });
+  $effect(() => { loadSettings(); loadFeatures(); loadLocale(); });
 
   async function loadSettings() {
     const url = await getSetting('supabase_url');
@@ -115,6 +116,17 @@
         </div>
         <input type="checkbox" class="toggle toggle-primary" checked={theme === 'dark'}
                onchange={() => setTheme(theme === 'dark' ? 'light' : 'dark')} />
+      </div>
+      <div class="flex items-center justify-between mt-3">
+        <div>
+          <p class="font-medium">🌐 Language / Bahasa</p>
+          <p class="text-sm text-base-content/50">{getLocale() === 'en' ? 'English' : 'Bahasa Indonesia'}</p>
+        </div>
+        <select class="select text-sm w-auto" value={getLocale()}
+                onchange={(e: any) => setLocale(e.target.value)}>
+          <option value="en">English</option>
+          <option value="id">Bahasa Indonesia</option>
+        </select>
       </div>
     </div>
   </div>
