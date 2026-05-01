@@ -50,7 +50,6 @@ class DexieDatabase {
     const upper = sql.toUpperCase().trim();
     const table = this.extractTable(sql);
 
-    // SELECT * FROM table ORDER BY col
     if (upper.startsWith('SELECT') && upper.includes('*')) {
       const orderMatch = upper.match(/ORDER\s+BY\s+(\S+)\s+(ASC|DESC)?/i);
       const limitMatch = upper.match(/LIMIT\s+(\d+)/i);
@@ -60,33 +59,35 @@ class DexieDatabase {
 
       if (whereMatch) {
         const clause = whereMatch[1].trim();
-        // WHERE col = ?
         const eqMatch = clause.match(/^(\S+)\s*=\s*\?$/);
-        // WHERE col LIKE ?
         const likeMatch = clause.match(/^(\S+)\s+LIKE\s+\?$/);
-        // WHERE col >= ?
         const gteMatch = clause.match(/^(\S+)\s*>=\s*\?$/);
 
         if (eqMatch && params.length > 0) {
-          collection = this.dexie.table(table).where(eqMatch[1]).equals(params[0]);
+          const col = eqMatch[1].toLowerCase();
+          collection = this.dexie.table(table).where(col).equals(params[0]);
         } else if (likeMatch && params.length > 0) {
-          const pattern = String(params[0]).replace('%', '');
+          const col = likeMatch[1].toLowerCase();
+          const pattern = String(params[0]).replace(/%/g, '').toLowerCase();
           collection = this.dexie.table(table).filter((row: any) =>
-            String(row[likeMatch[1]] || '').includes(pattern)
+            String(row[col] || '').toLowerCase().includes(pattern)
           );
         } else if (gteMatch && params.length > 0) {
-          collection = this.dexie.table(table).where(gteMatch[1]).aboveOrEqual(params[0]);
+          const col = gteMatch[1].toLowerCase();
+          collection = this.dexie.table(table).where(col).aboveOrEqual(params[0]);
         }
       }
 
       let result = await collection.toArray();
 
       if (orderMatch) {
-        const [_, col, dir] = orderMatch;
+        const col = orderMatch[1].toLowerCase();
+        const dir = orderMatch[2];
         result.sort((a: any, b: any) => {
           const va = a[col] ?? '';
           const vb = b[col] ?? '';
-          return dir === 'DESC' ? String(vb).localeCompare(String(va)) : String(va).localeCompare(String(vb));
+          if (dir === 'DESC') return String(vb).localeCompare(String(va));
+          return String(va).localeCompare(String(vb));
         });
       }
 
