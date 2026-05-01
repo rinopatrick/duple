@@ -5,8 +5,15 @@
   import { ChevronDown, MoreHorizontal } from 'lucide-svelte';
   import { getLocale, t } from '../i18n/index.svelte';
 
-  const currentRoute = $derived(getRoute());
+  let locale = $state(getLocale());
+  let currentRoute = $derived(getRoute());
   let showMore = $state(false);
+
+  $effect(() => {
+    function onLocale() { locale = getLocale(); }
+    window.addEventListener('duple-locale-changed', onLocale);
+    return () => window.removeEventListener('duple-locale-changed', onLocale);
+  });
 
   function iconComponent(name: string): any {
     return (Icons as any)[name] || Icons.HelpCircle;
@@ -20,7 +27,7 @@
   }
 
   function label(item: { label: string; route: Route }): string {
-    return (t().nav as any)[item.route] || item.label;
+    return ((locale ? t() : t()).nav as any)[item.route] || item.label;
   }
 
   const mainItems = $derived(filter(NAV_MAIN));

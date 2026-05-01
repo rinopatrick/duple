@@ -1,3 +1,5 @@
+const translations: Record<string, any> = null as any;
+
 export const en = {
   app: { name: 'Duple', tagline: 'Your relationship sidekick' },
   nav: {
@@ -5,7 +7,7 @@ export const en = {
     'date-generator': 'Date Generator', siklus: 'Cycle Tracker', mood: 'Mood Tracker',
     rekomendasi: 'Recommendations', rencana: 'Place Plans', momen: 'Special Moments',
     wishlist: 'Wishlist', trigger: 'Trigger Words', apology: 'Apology Playbook',
-    stats: 'Stats & Insights', orang: 'Important People', settings: 'Settings'
+    stats: 'Stats & Charts', orang: 'Important People', settings: 'Settings'
   },
   landing: {
     title: 'Your relationship sidekick', start: "Get Started — It's Free",
@@ -39,7 +41,7 @@ export const id = {
     'date-generator': 'Date Generator', siklus: 'Siklus Haid', mood: 'Mood Tracker',
     rekomendasi: 'Rekomendasi', rencana: 'Rencana Tempat', momen: 'Momen Spesial',
     wishlist: 'Wishlist', trigger: 'Trigger Words', apology: 'Apology Playbook',
-    stats: 'Stats & Insights', orang: 'Orang Penting', settings: 'Pengaturan'
+    stats: 'Stats & Charts', orang: 'Orang Penting', settings: 'Pengaturan'
   },
   landing: {
     title: 'Your relationship sidekick', start: 'Mulai — Gratis',
@@ -91,13 +93,7 @@ export const es = {
     noMood: 'Sin registro', logMood: 'Registrar', upcoming: 'Próximos Momentos',
     noUpcoming: 'Sin momentos próximos', seeAll: 'Ver Todo', emergency: 'Modo Emergencia: ¿Se Enojó?'
   },
-  settings: {
-    appearance: 'Apariencia', darkMode: 'Modo Oscuro', darkDesc: 'Cambiar tema',
-    features: 'Funciones', cycleToggle: 'Ciclo', cycleDesc: 'Calendario y predicciones.',
-    cloud: 'Sincronización', cloudDesc: 'Usa tu Supabase gratis para sincronizar.',
-    backup: 'Respaldo', backupDesc: 'Exportar a JSON o importar respaldo.',
-    about: 'Acerca de', language: 'Idioma',
-  },
+  settings: { appearance: 'Apariencia', darkMode: 'Modo Oscuro', darkDesc: 'Cambiar tema', features: 'Funciones', cycleToggle: 'Ciclo', cycleDesc: 'Calendario y predicciones.', cloud: 'Sincronización', cloudDesc: 'Usa tu Supabase gratis.', backup: 'Respaldo', backupDesc: 'Exportar/Importar JSON.', about: 'Acerca de', language: 'Idioma' },
 };
 
 export const fr = {
@@ -113,7 +109,7 @@ export const fr = {
     title: 'Votre assistant relationnel', start: 'Commencer — Gratuit',
     sub: 'Open source. Pas d\'inscription. Données locales.',
     f1t: 'Ne jamais oublier leurs favoris', f1d: 'Enregistrez leurs plats, boissons et snacks préférés.',
-    f2t: 'Recommandations par cycle', f2d: 'Rappels intelligents à l\'approche du syndrome prémenstruel.',
+    f2t: 'Recommandations par cycle', f2d: 'Rappels intelligents à l\'approche du SPM.',
     f3t: 'Que dire quand ils sont fâchés', f3d: 'Alertes de mots interdits + alternatives sûres.',
     f4t: '100% local. 100% privé.', f4d: 'Données sur votre appareil. Pas de comptes, pas de serveurs.',
   },
@@ -125,13 +121,7 @@ export const fr = {
     noMood: 'Pas d\'humeur', logMood: 'Enregistrer', upcoming: 'Prochains Moments',
     noUpcoming: 'Aucun moment à venir', seeAll: 'Voir Tout', emergency: 'Mode Urgence: Ils sont fâchés?'
   },
-  settings: {
-    appearance: 'Apparence', darkMode: 'Mode Sombre', darkDesc: 'Changer le thème',
-    features: 'Fonctions', cycleToggle: 'Cycle', cycleDesc: 'Calendrier et prédictions.',
-    cloud: 'Synchronisation', cloudDesc: 'Utilisez votre Supabase gratuit.',
-    backup: 'Sauvegarde', backupDesc: 'Exporter en JSON ou importer une sauvegarde.',
-    about: 'À propos', language: 'Langue',
-  },
+  settings: { appearance: 'Apparence', darkMode: 'Mode Sombre', darkDesc: 'Changer le thème', features: 'Fonctions', cycleToggle: 'Cycle', cycleDesc: 'Calendrier et prédictions.', cloud: 'Synchronisation', cloudDesc: 'Utilisez votre Supabase gratuit.', backup: 'Sauvegarde', backupDesc: 'Exporter/Importer JSON.', about: 'À propos', language: 'Langue' },
 };
 
 export const pt = {
@@ -159,13 +149,7 @@ export const pt = {
     noMood: 'Sem registro', logMood: 'Registrar', upcoming: 'Próximos Momentos',
     noUpcoming: 'Sem momentos próximos', seeAll: 'Ver Tudo', emergency: 'Modo Emergência: Estão Chateados?'
   },
-  settings: {
-    appearance: 'Aparência', darkMode: 'Modo Escuro', darkDesc: 'Alternar tema',
-    features: 'Funções', cycleToggle: 'Ciclo', cycleDesc: 'Calendário e previsões.',
-    cloud: 'Sincronização', cloudDesc: 'Use seu Supabase grátis para sincronizar.',
-    backup: 'Backup', backupDesc: 'Exportar para JSON ou importar backup.',
-    about: 'Sobre', language: 'Idioma',
-  },
+  settings: { appearance: 'Aparência', darkMode: 'Modo Escuro', darkDesc: 'Alternar tema', features: 'Funções', cycleToggle: 'Ciclo', cycleDesc: 'Calendário e previsões.', cloud: 'Sincronização', cloudDesc: 'Use seu Supabase grátis.', backup: 'Backup', backupDesc: 'Exportar/Importar JSON.', about: 'Sobre', language: 'Idioma' },
 };
 
 export const jp = {
@@ -193,39 +177,31 @@ export const jp = {
     noMood: '記録なし', logMood: '気分を記録', upcoming: '今後の予定',
     noUpcoming: '予定なし', seeAll: 'すべて見る', emergency: '緊急モード: 相手が怒ってる？'
   },
-  settings: {
-    appearance: '外観', darkMode: 'ダークモード', darkDesc: 'テーマを切り替え',
-    features: '機能', cycleToggle: '生理周期', cycleDesc: 'カレンダーと予測。',
-    cloud: 'クラウド同期', cloudDesc: '無料のSupabaseで同期。',
-    backup: 'バックアップ', backupDesc: 'JSONエクスポート/インポート。',
-    about: 'について', language: '言語',
-  },
+  settings: { appearance: '外観', darkMode: 'ダークモード', darkDesc: 'テーマを切り替え', features: '機能', cycleToggle: '生理周期', cycleDesc: 'カレンダーと予測。', cloud: 'クラウド同期', cloudDesc: '無料のSupabaseで同期。', backup: 'バックアップ', backupDesc: 'JSONエクスポート/インポート。', about: 'について', language: '言語' },
 };
 
 export type Locale = 'en' | 'id' | 'es' | 'fr' | 'pt' | 'jp';
 export type Translations = typeof en;
 
-const LOCALE_MAP: Record<string, Locale> = { en, id, es, fr, pt, jp };
-let _locale: Locale = $state('en');
+const LOCALE_MAP: Record<string, Translations> = { en, id, es, fr, pt, jp };
 
-export function getLocale(): Locale { return _locale; }
-export function setLocale(l: Locale) {
-  _locale = l;
-  if (typeof localStorage !== 'undefined') localStorage.setItem('duple_locale', l);
-}
-export function t(): Translations { return LOCALE_MAP[_locale] as any; }
-export function loadLocale() {
-  if (typeof localStorage !== 'undefined') {
-    const saved = localStorage.getItem('duple_locale') as Locale;
-    const valid: Locale[] = ['en', 'id', 'es', 'fr', 'pt', 'jp'];
-    if (saved && valid.includes(saved)) { _locale = saved; return; }
-  }
+// Simple reactive locale using module-level variable + custom event
+let _current: Locale = (typeof localStorage !== 'undefined' ? (localStorage.getItem('duple_locale') as Locale) : null) || 'en';
+if (typeof localStorage !== 'undefined' && !localStorage.getItem('duple_locale')) {
   if (typeof navigator !== 'undefined') {
     const lang = navigator.language?.toLowerCase() || '';
-    if (lang.startsWith('id')) _locale = 'id';
-    else if (lang.startsWith('es')) _locale = 'es';
-    else if (lang.startsWith('fr')) _locale = 'fr';
-    else if (lang.startsWith('pt')) _locale = 'pt';
-    else if (lang.startsWith('ja')) _locale = 'jp';
+    if (lang.startsWith('id')) _current = 'id';
+    else if (lang.startsWith('es')) _current = 'es';
+    else if (lang.startsWith('fr')) _current = 'fr';
+    else if (lang.startsWith('pt')) _current = 'pt';
+    else if (lang.startsWith('ja')) _current = 'jp';
   }
 }
+
+export function getLocale(): Locale { return _current; }
+export function setLocale(l: Locale) {
+  _current = l;
+  if (typeof localStorage !== 'undefined') localStorage.setItem('duple_locale', l);
+  if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('duple-locale-changed', { detail: l }));
+}
+export function t(): Translations { return LOCALE_MAP[_current] || en; }

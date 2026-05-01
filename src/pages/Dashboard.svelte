@@ -16,7 +16,13 @@
   import { Bell, Heart } from 'lucide-svelte';
   import { t } from '../lib/i18n/index.svelte';
 
-  let tr = $derived(t());
+  let tr = $state(t());
+
+  $effect(() => {
+    function onLocale() { tr = t(); }
+    window.addEventListener('duple-locale-changed', onLocale);
+    return () => window.removeEventListener('duple-locale-changed', onLocale);
+  });
 
   let makananCount = $state(0);
   let rencanaWishlist = $state(0);

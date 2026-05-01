@@ -3,7 +3,13 @@
   import { t } from '../i18n/index.svelte';
 
   let { onStart }: { onStart: () => void } = $props();
-  const tr = $derived(t());
+  let tr = $state(t());
+
+  $effect(() => {
+    function onLocale() { tr = t(); }
+    window.addEventListener('duple-locale-changed', onLocale);
+    return () => window.removeEventListener('duple-locale-changed', onLocale);
+  });
 </script>
 
 <div class="min-h-screen flex flex-col items-center justify-center p-6 text-center" style="background: var(--bg)">

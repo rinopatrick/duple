@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getSetting, setSetting } from '../lib/db/settings';
   import { getTheme, setTheme, getFeature, setFeature, loadFeatures } from '../lib/stores/app.svelte';
-  import { getLocale, setLocale, t, loadLocale, type Locale } from '../lib/i18n';
+  import { getLocale, setLocale, t, type Locale } from '../lib/i18n';
   import { initSync, pushAllToCloud, isSyncEnabled, checkSyncStatus } from '../lib/sync/supabase';
   import { getAllMakanan, getAllLogMakanan, getAllSiklus, getAllMoodLogs, getAllRencana, getAllMomen, getAllWishlist, getAllUkuran, getAllTriggerWords, getAllOrang } from '../lib/db';
   import { Sun, Moon, Database, Cloud, CloudOff, Upload, Download, Check } from 'lucide-svelte';
@@ -17,7 +17,7 @@
 
   const MIGRATION_SQL_URL = 'https://raw.githubusercontent.com/rinopatrick/duple/master/supabase_migration.sql';
 
-  $effect(() => { loadSettings(); loadFeatures(); loadLocale(); });
+  $effect(() => { loadSettings(); loadFeatures(); });
 
   async function loadSettings() {
     const url = await getSetting('supabase_url');
