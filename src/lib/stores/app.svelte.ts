@@ -67,7 +67,7 @@ let _theme: 'light' | 'dark' = $state('light');
 let _features: Record<string, boolean> = $state({ siklus: true });
 
 export function isDesktop(): boolean {
-  return typeof window !== 'undefined' && '__TAURI_INTERNALS__' in (window as any);
+  return typeof window !== 'undefined' && ('__TAURI_INTERNALS__' in (window as any) || '__TAURI__' in (window as any));
 }
 
 export function getFeature(key: string): boolean {

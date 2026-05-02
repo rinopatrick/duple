@@ -3,7 +3,7 @@ import Dexie, { type Table } from 'dexie';
 import { SCHEMA } from './schema';
 
 let db: any = null;
-const isTauri = typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
+const isTauri = typeof window !== 'undefined' && ('__TAURI_INTERNALS__' in window || '__TAURI__' in window);
 
 // ─── Dexie-backed browser database (persistent via IndexedDB) ───
 
