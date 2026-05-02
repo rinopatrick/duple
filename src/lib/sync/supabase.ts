@@ -1,4 +1,4 @@
-import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient, type Session } from '@supabase/supabase-js';
 import { getAllMakanan, type MakananFavorit } from '../db/makanan';
 import { getAllLogMakanan, type LogMakanan } from '../db/log_makanan';
 import { getAllSiklus, type SiklusHaid } from '../db/siklus';
@@ -12,12 +12,17 @@ import { getSetting, setSetting } from '../db/settings';
 
 let supabase: SupabaseClient | null = null;
 let syncEnabled = false;
+let currentSession: Session | null = null;
 
 const TABLES = [
   'makanan_favorit', 'log_makanan', 'siklus_haid', 'mood_log',
   'rencana_tempat', 'momen', 'wishlist_hadiah', 'ukuran_pasangan',
   'trigger_words', 'orang_penting'
 ];
+
+function getRedirectUrl(): string {
+  return window.location.origin + window.location.pathname;
+}
 
 export async function initSync(): Promise<boolean> {
   const url = await getSetting('supabase_url');
@@ -27,7 +32,19 @@ export async function initSync(): Promise<boolean> {
 
   try {
     supabase = createClient(url, key);
-    const { data, error } = await supabase.from('settings').select('*').limit(1);
+
+    // Try to restore session from localStorage
+    const { data } = await supabase.auth.getSession();
+    if (data.session) {
+      currentSession = data.session;
+      // If we have a session, set it on the client
+      await supabase.auth.setSession({
+        access_token: data.session.access_token,
+        refresh_token: data.session.refresh_token,
+      });
+    }
+
+    const { error } = await supabase.from('settings').select('*').limit(1);
     if (error) {
       console.error('Supabase connection failed:', error.message);
       supabase = null;
@@ -45,6 +62,71 @@ export async function initSync(): Promise<boolean> {
 
 export function isSyncEnabled(): boolean {
   return syncEnabled;
+}
+
+export function getSession(): Session | null {
+  return currentSession;
+}
+
+export async function signInWithOAuth(): Promise<string | null> {
+  if (!supabase) return 'Not connected. Enter URL + anon key first.';
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: getRedirectUrl(),
+      skipBrowserRedirect: false,
+    },
+  });
+
+  if (error) return error.message;
+  return null;
+}
+
+export async function signInWithEmail(email: string): Promise<string | null> {
+  if (!supabase) return 'Not connected. Enter URL + anon key first.';
+
+  const { error } = await supabase.auth.signInWithOtp({
+    email,
+    options: {
+      emailRedirectTo: getRedirectUrl(),
+    },
+  });
+
+  if (error) return error.message;
+  return null;
+}
+
+export async function handleAuthCallback(): Promise<string | null> {
+  // Check URL for auth callback parameters
+  const hash = window.location.hash;
+  if (!supabase) return null;
+
+  try {
+    // PKCE callback is handled automatically by supabase-js
+    const { data, error } = await supabase.auth.getSession();
+    if (error) return error.message;
+    if (data.session) {
+      currentSession = data.session;
+      syncEnabled = true;
+      console.log('☁️ Authenticated via OAuth');
+      // Clean up URL
+      if (hash && hash.includes('access_token')) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
+  } catch (e) {
+    return String(e);
+  }
+  return null;
+}
+
+export async function signOut(): Promise<void> {
+  if (supabase) {
+    await supabase.auth.signOut();
+  }
+  currentSession = null;
+  syncEnabled = false;
 }
 
 export async function pushAllToCloud(): Promise<{ success: boolean; message: string }> {
@@ -91,6 +173,7 @@ async function uploadTable(table: string, rows: any[]) {
 export async function checkSyncStatus(): Promise<{
   configured: boolean;
   connected: boolean;
+  authenticated: boolean;
   localRows: number;
   cloudRows: number;
 }> {
@@ -99,6 +182,7 @@ export async function checkSyncStatus(): Promise<{
   const configured = !!(url && key);
 
   let connected = false;
+  let authenticated = !!currentSession;
   let cloudRows = 0;
 
   if (syncEnabled && supabase) {
@@ -113,5 +197,5 @@ export async function checkSyncStatus(): Promise<{
     } catch (_) {}
   }
 
-  return { configured, connected, localRows: 0, cloudRows };
+  return { configured, connected, authenticated, localRows: 0, cloudRows };
 }

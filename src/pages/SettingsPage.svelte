@@ -2,6 +2,9 @@
   import { getSetting, setSetting } from '../lib/db/settings';
   import { getTheme, setTheme, getFeature, setFeature, loadFeatures } from '../lib/stores/app.svelte';
   import { setLocale, getLocale, tr, type Locale } from '../lib/i18n';
+  import { initSync, pushAllToCloud, isSyncEnabled, checkSyncStatus, signInWithOAuth, signOut, getSession } from '../lib/sync/supabase';
+  import { getAllMakanan, getAllLogMakanan, getAllSiklus, getAllMoodLogs, getAllRencana, getAllMomen, getAllWishlist, getAllUkuran, getAllTriggerWords, getAllOrang } from '../lib/db';
+  import { Sun, Moon, Database, Cloud, Upload, Download, Check, LogIn, LogOut } from 'lucide-svelte';
 
   let locale = $derived(getLocale());
   let theme = $derived(getTheme());
@@ -24,6 +27,7 @@
     if (url) supabaseUrl = url;
     if (key) supabaseKey = key;
     syncEnabled = await isSyncEnabled();
+    authUser = getSession()?.user?.email || null;
   }
 
   async function saveSupabaseConfig() {
@@ -45,6 +49,18 @@
     const result = await pushAllToCloud();
     syncStatus = result.success ? `✅ ${result.message}` : `❌ ${result.message}`;
     syncing = false;
+  }
+
+  async function handleLogin() {
+    const err = await signInWithOAuth();
+    if (err) syncStatus = `❌ ${err}`;
+  }
+
+  async function handleLogout() {
+    await signOut();
+    authUser = null;
+    syncEnabled = false;
+    syncStatus = 'Signed out';
   }
 
   async function exportData() {
@@ -190,6 +206,23 @@
         </div>
         {#if syncStatus}
           <div class="text-sm mt-2">{syncStatus}</div>
+        {/if}
+
+        {#if syncEnabled && supabaseUrl}
+          <div class="divider text-xs text-base-content/50 mt-3 mb-1">{tr().settings.orDivider}</div>
+          {#if authUser}
+            <div class="flex items-center justify-between gap-2 p-2 bg-base-200 rounded-lg">
+              <span class="text-xs text-base-content/70">👤 {authUser}</span>
+              <button onclick={handleLogout} class="btn btn-ghost btn-xs text-error">
+                <LogOut class="w-3.5 h-3.5" /> {tr().settings.signOut}
+              </button>
+            </div>
+          {:else}
+            <button onclick={handleLogin} class="btn btn-outline btn-sm w-full gap-2">
+              <LogIn class="w-4 h-4" /> {tr().settings.oauthLogin}
+            </button>
+            <p class="text-xs text-base-content/50 mt-1">{tr().settings.oauthDesc}</p>
+          {/if}
         {/if}
       </div>
     </div>
