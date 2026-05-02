@@ -67,8 +67,9 @@
     <button onclick={() => showDownload = true} class="btn btn-ghost btn-sm btn-square" title="Download Desktop App">
       <Download class="w-4 h-4" />
     </button>
-    <a href="https://saweria.co/rinopatrick" target="_blank" rel="noopener" class="btn btn-ghost btn-sm btn-square text-warning/70" title="Support Duple">
+    <a href="https://saweria.co/rinopatrick" target="_blank" rel="noopener" class="btn btn-ghost btn-sm flex items-center gap-1 text-warning/70" title="Support Duple">
       <Heart class="w-4 h-4" />
+      <span class="text-xs hidden md:inline">Support</span>
     </a>
     <button onclick={cycleLang} class="btn btn-ghost btn-sm flex items-center gap-1" title="Cycle language">
       <Globe class="w-3.5 h-3.5" />
