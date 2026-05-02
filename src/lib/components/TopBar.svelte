@@ -68,7 +68,7 @@
     <button onclick={() => showDownload = true} class="btn btn-ghost btn-sm btn-square" title="Download Desktop App">
       <Download class="w-4 h-4" />
     </button>
-    <button onclick={() => showDownload = false; showSupport = !showSupport} class="btn btn-ghost btn-sm flex items-center gap-1 text-warning/70" title="Support Duple">
+    <button onclick={() => { showDownload = false; showSupport = !showSupport; }} class="btn btn-ghost btn-sm flex items-center gap-1 text-warning/70" title="Support Duple">
       <Heart class="w-4 h-4" />
       <span class="text-xs hidden md:inline">Support</span>
     </button>
