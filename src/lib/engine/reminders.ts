@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import { getAllMomen, type Momen } from '../db/momen';
 import { getLastSiklus } from '../db/siklus';
+import { tr } from '../i18n';
 
 export interface Reminder {
   id: string;
@@ -32,8 +33,8 @@ export async function getReminders(): Promise<Reminder[]> {
       if (daysLeft >= 0 && daysLeft <= 5) {
         reminders.push({
           id: 'pms', type: 'pms',
-          title: 'PMS Alert',
-          description: daysLeft === 0 ? 'PMS predicted today — be extra thoughtful!' : `PMS predicted in ${daysLeft} days — prepare comfort food`,
+          title: tr().engine.pmsAlert,
+          description: daysLeft === 0 ? tr().engine.pmsToday : tr().engine.pmsInDays.replace('{n}', String(daysLeft)),
           daysLeft, priority: 'high', icon: '🩸'
         });
       }
@@ -43,8 +44,8 @@ export async function getReminders(): Promise<Reminder[]> {
       if (haidDays >= 0 && haidDays <= 3) {
         reminders.push({
           id: 'haid', type: 'pms',
-          title: 'Cycle Starting Soon',
-          description: haidDays === 0 ? 'Cycle expected today' : `Cycle expected in ${haidDays} days`,
+          title: tr().engine.cycleSoon,
+          description: haidDays === 0 ? tr().engine.cycleToday : tr().engine.cycleInDays.replace('{n}', String(haidDays)),
           daysLeft: haidDays, priority: 'high', icon: '📅'
         });
       }
@@ -64,7 +65,7 @@ export async function getReminders(): Promise<Reminder[]> {
     reminders.push({
       id: `momen-${m.id}`, type: 'momen',
       title: m.nama,
-      description: days === 0 ? 'TODAY! 🎉' : `${days} days away`,
+      description: days === 0 ? `TODAY! 🎉` : tr().engine.daysAway.replace('{n}', String(days)),
       daysLeft: days, priority: days <= 3 ? 'high' : 'medium',
       icon: days === 0 ? '🎉' : '📌'
     });

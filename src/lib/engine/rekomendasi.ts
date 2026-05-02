@@ -2,6 +2,7 @@ import { getMakananByMood, type MakananFavorit } from '../db/makanan';
 import { getLastSiklus, type SiklusHaid } from '../db/siklus';
 import { getAllMoodLogs, type MoodLog } from '../db/mood';
 import { getAllTriggerWords, type TriggerWord } from '../db/trigger';
+import { tr } from '../i18n';
 import dayjs from 'dayjs';
 
 export interface RekomendasiResult {
@@ -118,16 +119,16 @@ export async function generateRekomendasi(): Promise<RekomendasiResult> {
 
   let saran = '';
   if (fase === 'pms') {
-    saran = `Fase PMS (hari ke-${hari_ke}). Dia mungkin lebih sensitif. Hindari debat, kasih perhatian ekstra.`;
-    if (prediksi_mulai) saran += ` Prediksi haid: ${prediksi_mulai}.`;
+    saran = tr().engine.pmsPhase.replace('{day}', String(hari_ke));
+    if (prediksi_mulai) saran += ` ${prediksi_mulai}.`;
   } else if (fase === 'haid') {
-    saran = `Fase Haid (hari ke-${hari_ke}). Dia butuh kenyamanan. Makanan hangat, jangan ajak jalan jauh.`;
+    saran = tr().engine.periodPhase.replace('{day}', String(hari_ke));
   } else if (fase === 'ovulasi') {
-    saran = `Masa subur. Mood biasanya lebih baik. Waktu tepat buat date spesial!`;
+    saran = tr().engine.fertilePhase;
   } else if (fase === 'normal') {
-    saran = `Fase normal. Mood: ${moodToday}. Aman buat ngobrolin apa aja.`;
+    saran = tr().engine.normalPhase.replace('{mood}', moodToday);
   } else {
-    saran = `Belum cukup data siklus untuk prediksi. Isi data siklus haid minimal 2 kali.`;
+    saran = tr().engine.notEnoughCycle;
   }
 
   return {
