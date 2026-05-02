@@ -26,9 +26,22 @@
   let loaded = $state(false);
   let error = $state('');
   let reminders: Reminder[] = $state([]);
+  let _localeTrigger = $state(0);
 
   $effect(() => {
     loadDashboard();
+    // Re-fetch engine text when locale changes
+    const onLocale = () => { _localeTrigger++; };
+    window.addEventListener('duple-locale-changed', onLocale);
+    return () => window.removeEventListener('duple-locale-changed', onLocale);
+  });
+
+  $effect(() => {
+    // Re-generate recommendation text when locale changes (without heavy DB queries)
+    if (loaded && _localeTrigger > 0) {
+      generateRekomendasi().then(rec => { rekomendasi = rec; }).catch(() => {});
+      getReminders().then(rem => { reminders = rem; });
+    }
   });
 
   async function loadDashboard() {
