@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Monitor, Apple, Terminal, X, Chrome } from 'lucide-svelte';
+  import { Monitor, Apple, Terminal, X, PlusSquare } from 'lucide-svelte';
   import { tr } from '../i18n/index.svelte';
 
   let { show = false, onClose }: { show: boolean; onClose: () => void } = $props();
@@ -30,7 +30,7 @@
     </div>
     <p class="text-sm text-base-content/60">No download needed. One-click install from browser:</p>
     <button onclick={installPWA} class="btn btn-primary btn-sm w-full justify-start gap-3">
-      <Chrome class="w-4 h-4" /> Install as Desktop App (PWA)
+      <PlusSquare class="w-4 h-4" /> Install as Desktop App (PWA)
     </button>
     <p class="text-xs text-base-content/40 text-center">Works on Windows, Mac, Linux, Chrome, Edge</p>
     <div class="divider text-xs">or download .exe</div>
