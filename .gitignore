@@ -25,4 +25,3 @@ dist-ssr
 src-tauri/target/
 src-tauri/gen/
 .vercel
-!.github/workflows/ci.yml
