@@ -5,7 +5,8 @@
   import { initSync, pushAllToCloud, isSyncEnabled, checkSyncStatus, signInWithOAuth, signOut, getSession } from '../lib/sync/supabase';
   import { getAllMakanan, getAllLogMakanan, getAllSiklus, getAllMoodLogs, getAllRencana, getAllMomen, getAllWishlist, getAllUkuran, getAllTriggerWords, getAllOrang } from '../lib/db';
   import { importTable } from '../lib/db/core';
-  import { Sun, Moon, Database, Cloud, Upload, Download, Check, LogIn, LogOut } from 'lucide-svelte';
+  import { isPinEnabled, setPin, removePin } from '../lib/stores/pin.svelte';
+  import { Sun, Moon, Database, Cloud, Upload, Download, Check, LogIn, LogOut, Lock, Unlock } from 'lucide-svelte';
 
   let locale = $derived(getLocale());
   let theme = $derived(getTheme());
@@ -17,6 +18,9 @@
   let syncing = $state(false);
   let exporting = $state(false);
   let importing = $state(false);
+  let authUser = $state(null as string | null);
+  let pinEnabled = $state(isPinEnabled());
+  let newPin = $state('');
 
   const MIGRATION_SQL_URL = 'https://raw.githubusercontent.com/rinopatrick/duple/master/supabase_migration.sql';
 
@@ -62,6 +66,20 @@
     authUser = null;
     syncEnabled = false;
     syncStatus = 'Signed out';
+  }
+
+  function handleSetPin() {
+    if (newPin.length >= 4) {
+      setPin(newPin);
+      pinEnabled = true;
+      newPin = '';
+    }
+  }
+
+  function handleRemovePin() {
+    removePin();
+    pinEnabled = false;
+    newPin = '';
   }
 
   async function exportData() {
@@ -241,7 +259,27 @@
               <button onclick={handleLogout} class="btn btn-ghost btn-xs text-error">
                 <LogOut class="w-3.5 h-3.5" /> {tr().settings.signOut}
               </button>
+        </div>
+        <div class="flex items-center justify-between mt-3">
+          <div>
+            <p class="font-medium">🔐 App Lock (PIN)</p>
+            <p class="text-xs text-base-content/50">Lock the app with a PIN on startup.</p>
+          </div>
+          {#if pinEnabled}
+            <div class="flex gap-1">
+              <button onclick={handleRemovePin} class="btn btn-ghost btn-sm text-error">
+                <Unlock class="w-4 h-4" /> Disable
+              </button>
             </div>
+          {:else}
+            <div class="flex items-center gap-1">
+              <input type="password" inputmode="numeric" maxlength="6" class="input input-bordered input-sm w-20 text-center" bind:value={newPin} placeholder="PIN" />
+              <button onclick={handleSetPin} class="btn btn-primary btn-sm" disabled={newPin.length < 4}>
+                <Lock class="w-4 h-4" /> Set
+              </button>
+            </div>
+          {/if}
+        </div>
           {:else}
             <button onclick={handleLogin} class="btn btn-outline btn-sm w-full gap-2">
               <LogIn class="w-4 h-4" /> {tr().settings.oauthLogin}

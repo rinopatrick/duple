@@ -115,6 +115,44 @@ describe('i18n: Translation access', () => {
   });
 });
 
+describe('i18n: Language switching', () => {
+  it('switches between EN and ID', async () => {
+    const { setLocale, getLocale, tr } = await import('../lib/i18n/index.svelte');
+    setLocale('en');
+    expect(getLocale()).toBe('en');
+    expect(tr().dashboard.heading).toBe('Dashboard');
+
+    setLocale('id');
+    expect(getLocale()).toBe('id');
+    expect(tr().dashboard.heading).toBe('Dashboard');
+    expect(tr().common.save).toBe('Simpan');
+  });
+
+  it('all 6 languages have app name', async () => {
+    const { setLocale, tr } = await import('../lib/i18n/index.svelte');
+    const locales = ['en', 'id', 'es', 'fr', 'pt', 'jp'] as const;
+    for (const l of locales) {
+      setLocale(l);
+      expect(tr().app.name).toBe('Duple');
+    }
+  });
+});
+
+describe('PIN: Security module', () => {
+  it('setPin, getPin, verifyPin, removePin cycle', async () => {
+    const { setPin, getPin, verifyPin, removePin, hasPin } = await import('../lib/stores/pin.svelte');
+    const testPin = '1234';
+
+    setPin(testPin);
+    expect(hasPin()).toBe(true);
+    expect(verifyPin(testPin)).toBe(true);
+    expect(verifyPin('0000')).toBe(false);
+
+    removePin();
+    expect(hasPin()).toBe(false);
+  });
+});
+
 describe('Engine: Phase Prediction (edge cases)', () => {
   it('handles single cycle — returns unknown or normal', async () => {
     // Due to shared DB state from other tests, phase may vary
