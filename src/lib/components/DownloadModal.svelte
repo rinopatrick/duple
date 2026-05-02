@@ -4,7 +4,7 @@
 
   let { show = false, onClose }: { show: boolean; onClose: () => void } = $props();
 
-  const BASE = 'https://github.com/rinopatrick/duple/releases/download/v0.1.1';
+  const BASE = 'https://github.com/rinopatrick/duple/releases/latest/download';
 
   function detectOS(): 'win' | 'mac' | 'linux' {
     const ua = navigator.userAgent.toLowerCase();
