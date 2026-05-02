@@ -39,9 +39,6 @@
       "preload": {
         "db": "sqlite:duple.db"
       }
-    },
-    "notification": {
-      "all": true
     }
   },
   "bundle": {
