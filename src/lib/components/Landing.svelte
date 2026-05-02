@@ -59,9 +59,14 @@
       <button onclick={onStart} class="btn btn-primary btn-lg w-full" style="font-size:1.125rem; padding: 1rem 2rem;">
         {tr().landing.start}
       </button>
-      <a href={RELEASE_URL} target="_blank" rel="noopener" class="btn btn-outline btn-sm w-full gap-2">
-        <Download class="w-4 h-4" /> Download Desktop App (Windows/Mac/Linux)
-      </a>
+      <div class="flex gap-2">
+        <a href={RELEASE_URL} target="_blank" rel="noopener" class="btn btn-outline btn-sm flex-1 gap-1">
+          <Download class="w-3.5 h-3.5" /> Desktop App
+        </a>
+        <a href="https://saweria.co/rinopatrick" target="_blank" rel="noopener" class="btn btn-outline btn-sm flex-1 gap-1 text-warning">
+          💰 Support
+        </a>
+      </div>
       <p class="text-xs" style="color: var(--text-soft)">{tr().landing.sub}</p>
     </div>
   </div>
