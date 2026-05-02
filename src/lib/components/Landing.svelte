@@ -1,6 +1,7 @@
 <script lang="ts">
   import { UtensilsCrossed, Calendar, Lightbulb, Lock, Download } from 'lucide-svelte';
   import { tr } from '../i18n/index.svelte';
+  import { isDesktop } from '../stores/app.svelte';
   import DownloadModal from './DownloadModal.svelte';
 
   let { onStart }: { onStart: () => void } = $props();
@@ -66,9 +67,11 @@
         {tr().landing.start}
       </button>
       <div class="flex gap-2">
-        <button onclick={doDownload} class="btn btn-outline btn-sm flex-1 gap-1">
-          <Download class="w-3.5 h-3.5" /> Desktop App
-        </button>
+        {#if !isDesktop()}
+          <button onclick={doDownload} class="btn btn-outline btn-sm flex-1 gap-1">
+            <Download class="w-3.5 h-3.5" /> Desktop App
+          </button>
+        {/if}
         <a href="https://saweria.co/rinopatrick" target="_blank" rel="noopener" class="btn btn-outline btn-sm flex-1 gap-1 text-warning">
           💰 Support
         </a>
