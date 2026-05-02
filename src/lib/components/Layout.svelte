@@ -2,7 +2,6 @@
   import Sidebar from './Sidebar.svelte';
   import TopBar from './TopBar.svelte';
   import { getRoute, getSidebarOpen, toggleSidebar } from '../stores/app.svelte';
-  import { sendDesktopNotifications } from '../engine/reminders';
   import { tr } from '../i18n/index.svelte';
   import type { SvelteComponent } from 'svelte';
 
@@ -45,9 +44,6 @@
     }
   });
 
-  $effect(() => {
-    sendDesktopNotifications();
-  });
 </script>
 
 <div class="flex h-screen overflow-hidden bg-base-200">
