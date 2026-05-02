@@ -39,7 +39,7 @@
         { "db": "sqlite:duple.db" }
       ]
     }
-  },,
+  },
   "bundle": {
     "active": true,
     "targets": "all",
