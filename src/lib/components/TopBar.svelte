@@ -70,7 +70,7 @@
     </button>
     <button onclick={() => { showDownload = false; showSupport = !showSupport; }} class="btn btn-ghost btn-sm flex items-center gap-1 text-warning/70" title="Support Duple">
       <Heart class="w-4 h-4" />
-      <span class="text-xs hidden md:inline">Support</span>
+      <span class="text-xs">Support Us</span>
     </button>
     <button onclick={cycleLang} class="btn btn-ghost btn-sm flex items-center gap-1" title="Cycle language">
       <Globe class="w-3.5 h-3.5" />

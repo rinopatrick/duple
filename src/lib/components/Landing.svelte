@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { UtensilsCrossed, Calendar, Lightbulb, Lock, Download } from 'lucide-svelte';
+  import { UtensilsCrossed, Calendar, Lightbulb, Lock, Download, Heart } from 'lucide-svelte';
   import { tr } from '../i18n/index.svelte';
   import { isDesktop } from '../stores/app.svelte';
   import DownloadModal from './DownloadModal.svelte';
 
   let { onStart }: { onStart: () => void } = $props();
   let showDownload = $state(false);
+  let showSupport = $state(false);
 
   function doDownload(e: Event) {
     e.preventDefault();
@@ -72,9 +73,20 @@
             <Download class="w-3.5 h-3.5" /> Desktop App
           </button>
         {/if}
-        <a href="https://saweria.co/rinopatrick" target="_blank" rel="noopener" class="btn btn-outline btn-sm flex-1 gap-1 text-warning">
-          💰 Support
-        </a>
+        <div class="relative flex-1">
+          <button onclick={() => showSupport = !showSupport} class="btn btn-outline btn-sm w-full gap-1 text-warning">
+            <Heart class="w-3.5 h-3.5" /> Support Us
+          </button>
+          {#if showSupport}
+            <button class="fixed inset-0 z-40" onclick={() => showSupport = false}></button>
+            <div class="absolute bottom-full left-0 mb-2 w-full p-3 rounded-xl shadow-xl border space-y-2 z-50" style="background: var(--bg-card); border-color: var(--border)">
+              <p class="text-xs font-medium text-center" style="color: var(--text)">Support Duple 💙</p>
+              <a href="https://ko-fi.com/rinopatrick" target="_blank" rel="noopener" class="btn btn-ghost btn-xs w-full justify-start text-xs" onclick={() => showSupport = false}>☕ Ko-fi</a>
+              <a href="https://saweria.co/rinopatrick" target="_blank" rel="noopener" class="btn btn-ghost btn-xs w-full justify-start text-xs" onclick={() => showSupport = false}>💰 Saweria</a>
+              <a href="https://github.com/rinopatrick/duple" target="_blank" rel="noopener" class="btn btn-ghost btn-xs w-full justify-start text-xs" onclick={() => showSupport = false}>⭐ Star on GitHub</a>
+            </div>
+          {/if}
+        </div>
       </div>
       <p class="text-xs" style="color: var(--text-soft)">{tr().landing.sub}</p>
     </div>
