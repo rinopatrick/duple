@@ -124,7 +124,8 @@ duple/
 Duple is free and open source forever. If you find it useful:
 
 - ⭐ Star this repo
-- 💝 [Buy me a coffee](https://ko-fi.com/YOUR_USERNAME)
+- ☕ [Ko-fi](https://ko-fi.com/rinopatrick)
+- 💰 [Saweria](https://saweria.co/rinopatrick)
 - 🔗 Share with someone who needs it
 
 ## Privacy

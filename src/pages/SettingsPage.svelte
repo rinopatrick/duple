@@ -335,8 +335,11 @@
       <Heart class="w-6 h-6 mx-auto text-primary" />
       <h2 class="card-title justify-center text-sm">Support Duple</h2>
       <p class="text-xs text-base-content/60">Duple is free & open source forever. If it helps your relationship, consider buying me a coffee.</p>
-      <a href="https://ko-fi.com/YOUR_USERNAME" target="_blank" rel="noopener" class="btn btn-primary btn-sm w-full">
-        ☕ Buy me a coffee
+      <a href="https://ko-fi.com/rinopatrick" target="_blank" rel="noopener" class="btn btn-primary btn-sm w-full">
+        ☕ Ko-fi
+      </a>
+      <a href="https://saweria.co/rinopatrick" target="_blank" rel="noopener" class="btn btn-outline btn-sm w-full">
+        💰 Saweria
       </a>
       <p class="text-xs text-base-content/40">
         ⭐ <a href="https://github.com/rinopatrick/duple" target="_blank" rel="noopener" class="link">Star on GitHub</a> also helps a lot!
