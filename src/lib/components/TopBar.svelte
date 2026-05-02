@@ -9,6 +9,7 @@
   let searchOpen = $state(false);
   let query = $state('');
   let showDownload = $state(false);
+  let showSupport = $state(false);
 
   const LANG_LABELS: Record<Locale, string> = { en: 'EN', id: 'ID', es: 'ES', fr: 'FR', pt: 'PT', jp: '日本語' };
   const LANGS: Locale[] = ['en', 'id', 'es', 'fr', 'pt', 'jp'];
@@ -67,10 +68,10 @@
     <button onclick={() => showDownload = true} class="btn btn-ghost btn-sm btn-square" title="Download Desktop App">
       <Download class="w-4 h-4" />
     </button>
-    <a href="https://saweria.co/rinopatrick" target="_blank" rel="noopener" class="btn btn-ghost btn-sm flex items-center gap-1 text-warning/70" title="Support Duple">
+    <button onclick={() => showDownload = false; showSupport = !showSupport} class="btn btn-ghost btn-sm flex items-center gap-1 text-warning/70" title="Support Duple">
       <Heart class="w-4 h-4" />
       <span class="text-xs hidden md:inline">Support</span>
-    </a>
+    </button>
     <button onclick={cycleLang} class="btn btn-ghost btn-sm flex items-center gap-1" title="Cycle language">
       <Globe class="w-3.5 h-3.5" />
       <span class="text-xs font-medium">{LANG_LABELS[locale]}</span>
@@ -82,3 +83,13 @@
 </div>
 
 <DownloadModal show={showDownload} onClose={() => showDownload = false} />
+
+{#if showSupport}
+  <button class="fixed inset-0 z-40" onclick={() => showSupport = false}></button>
+  <div class="fixed top-12 right-4 z-50 w-48 p-3 rounded-xl shadow-xl border space-y-2" style="background: var(--bg-card); border-color: var(--border)">
+    <p class="text-xs font-medium" style="color: var(--text)">Support Duple 💙</p>
+    <a href="https://ko-fi.com/rinopatrick" target="_blank" rel="noopener" class="btn btn-ghost btn-xs w-full justify-start text-xs">☕ Ko-fi</a>
+    <a href="https://saweria.co/rinopatrick" target="_blank" rel="noopener" class="btn btn-ghost btn-xs w-full justify-start text-xs">💰 Saweria</a>
+    <a href="https://github.com/rinopatrick/duple" target="_blank" rel="noopener" class="btn btn-ghost btn-xs w-full justify-start text-xs">⭐ Star on GitHub</a>
+  </div>
+{/if}
