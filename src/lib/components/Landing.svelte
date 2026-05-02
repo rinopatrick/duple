@@ -1,9 +1,15 @@
 <script lang="ts">
   import { UtensilsCrossed, Calendar, Lightbulb, Lock, Download } from 'lucide-svelte';
   import { tr } from '../i18n/index.svelte';
+  import DownloadModal from './DownloadModal.svelte';
 
   let { onStart }: { onStart: () => void } = $props();
-  const RELEASE_URL = 'https://github.com/rinopatrick/duple/releases/latest';
+  let showDownload = $state(false);
+
+  function doDownload(e: Event) {
+    e.preventDefault();
+    showDownload = true;
+  }
 </script>
 
 <div class="min-h-screen flex flex-col items-center justify-center p-6 text-center" style="background: var(--bg)">
@@ -60,9 +66,9 @@
         {tr().landing.start}
       </button>
       <div class="flex gap-2">
-        <a href={RELEASE_URL} target="_blank" rel="noopener" class="btn btn-outline btn-sm flex-1 gap-1">
+        <button onclick={doDownload} class="btn btn-outline btn-sm flex-1 gap-1">
           <Download class="w-3.5 h-3.5" /> Desktop App
-        </a>
+        </button>
         <a href="https://saweria.co/rinopatrick" target="_blank" rel="noopener" class="btn btn-outline btn-sm flex-1 gap-1 text-warning">
           💰 Support
         </a>
@@ -70,4 +76,5 @@
       <p class="text-xs" style="color: var(--text-soft)">{tr().landing.sub}</p>
     </div>
   </div>
+  <DownloadModal show={showDownload} onClose={() => showDownload = false} />
 </div>

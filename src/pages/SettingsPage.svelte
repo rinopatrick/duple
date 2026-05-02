@@ -7,6 +7,7 @@
   import { importTable } from '../lib/db/core';
   import { isPinEnabled, setPin, removePin } from '../lib/stores/pin.svelte';
   import { Sun, Moon, Database, Cloud, Upload, Download, Check, LogIn, LogOut, Lock, Unlock, Heart, Monitor } from 'lucide-svelte';
+  import DownloadModal from '../lib/components/DownloadModal.svelte';
 
   let locale = $derived(getLocale());
   let theme = $derived(getTheme());
@@ -19,6 +20,7 @@
   let exporting = $state(false);
   let importing = $state(false);
   let authUser = $state(null as string | null);
+  let showDownload = $state(false);
   let pinEnabled = $state(isPinEnabled());
   let newPin = $state('');
 
@@ -335,9 +337,9 @@
       <Monitor class="w-6 h-6 mx-auto" style="color: var(--primary)" />
       <h2 class="card-title justify-center text-sm">Desktop App</h2>
       <p class="text-xs text-base-content/60">Download the native app for Windows, Mac, or Linux. All data stays on your device.</p>
-      <a href="https://github.com/rinopatrick/duple/releases/latest" target="_blank" rel="noopener" class="btn btn-primary btn-sm w-full gap-2">
+      <button onclick={() => showDownload = true} class="btn btn-primary btn-sm w-full gap-2">
         <Download class="w-4 h-4" /> Download (.exe / .dmg / .AppImage)
-      </a>
+      </button>
     </div>
   </div>
 
@@ -358,3 +360,5 @@
     </div>
   </div>
 </div>
+
+<DownloadModal show={showDownload} onClose={() => showDownload = false} />

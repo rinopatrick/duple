@@ -2,11 +2,13 @@
   import { toggleSidebar, toggleTheme, getTheme, setRoute, NAV_MAIN, NAV_MORE, getFeature } from '../stores/app.svelte';
   import { getLocale, setLocale, tr, type Locale } from '../i18n/index.svelte';
   import { Moon, Sun, PanelLeft, Globe, Search, X, Download, Heart } from 'lucide-svelte';
+  import DownloadModal from './DownloadModal.svelte';
 
   const theme = $derived(getTheme());
   let locale = $derived(getLocale());
   let searchOpen = $state(false);
   let query = $state('');
+  let showDownload = $state(false);
 
   const LANG_LABELS: Record<Locale, string> = { en: 'EN', id: 'ID', es: 'ES', fr: 'FR', pt: 'PT', jp: '日本語' };
   const LANGS: Locale[] = ['en', 'id', 'es', 'fr', 'pt', 'jp'];
@@ -62,9 +64,9 @@
     {/if}
   </div>
   <div class="flex items-center gap-1">
-    <a href="https://github.com/rinopatrick/duple/releases/latest" target="_blank" rel="noopener" class="btn btn-ghost btn-sm btn-square" title="Download Desktop App">
+    <button onclick={() => showDownload = true} class="btn btn-ghost btn-sm btn-square" title="Download Desktop App">
       <Download class="w-4 h-4" />
-    </a>
+    </button>
     <a href="https://saweria.co/rinopatrick" target="_blank" rel="noopener" class="btn btn-ghost btn-sm btn-square text-warning/70" title="Support Duple">
       <Heart class="w-4 h-4" />
     </a>
@@ -77,3 +79,5 @@
     </button>
   </div>
 </div>
+
+<DownloadModal show={showDownload} onClose={() => showDownload = false} />
