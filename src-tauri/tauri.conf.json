@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/nicedoc/tauri/main/docs/.vitepress/theme/schema.json",
   "productName": "Duple",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "identifier": "com.duple.app",
   "build": {
     "frontendDist": "../dist",

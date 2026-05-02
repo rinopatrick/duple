@@ -4,7 +4,7 @@
 
   let { show = false, onClose }: { show: boolean; onClose: () => void } = $props();
 
-  const BASE = 'https://github.com/rinopatrick/duple/releases/latest/download';
+  const BASE = 'https://github.com/rinopatrick/duple/releases/download/v0.1.1';
 
   function detectOS(): 'win' | 'mac' | 'linux' {
     const ua = navigator.userAgent.toLowerCase();
@@ -15,9 +15,9 @@
 
   function download(platform: string) {
     const files: Record<string, string> = {
-      win: `${BASE}/duple_0.1.1_x64-setup.exe`,
-      mac: `${BASE}/duple_0.1.1_x64.dmg`,
-      linux: `${BASE}/duple_0.1.1_amd64.AppImage`,
+      win: `${BASE}/Duple_0.1.1_x64-setup.exe`,
+      mac: `${BASE}/Duple_0.1.1_x64.dmg`,
+      linux: `${BASE}/Duple_0.1.1_amd64.AppImage`,
     };
     window.open(files[platform] || files.win, '_blank');
   }
