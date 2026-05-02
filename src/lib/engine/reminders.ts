@@ -74,3 +74,26 @@ export async function getReminders(): Promise<Reminder[]> {
   reminders.sort((a, b) => a.daysLeft - b.daysLeft);
   return reminders.slice(0, 6);
 }
+
+export async function sendDesktopNotifications(): Promise<void> {
+  if (typeof window !== 'undefined' && '__TAURI_INTERNALS__' in (window as any)) {
+    try {
+      const { isPermissionGranted, requestPermission, sendNotification } = await import('@tauri-apps/plugin-notification');
+      let granted = await isPermissionGranted();
+      if (!granted) {
+        const perm = await requestPermission();
+        granted = perm === 'granted';
+      }
+      if (!granted) return;
+
+      const reminders = await getReminders();
+      for (const r of reminders.slice(0, 3)) {
+        if (r.daysLeft === 0 || r.priority === 'high') {
+          sendNotification({ title: r.title, body: r.description });
+        }
+      }
+    } catch (_) {
+      // Not running in Tauri or plugin not available
+    }
+  }
+}

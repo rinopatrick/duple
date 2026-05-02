@@ -12,15 +12,24 @@
   "app": {
     "windows": [
       {
-        "title": "Duple",
+        "title": "Duple — Your Relationship Sidekick",
         "width": 1280,
         "height": 800,
         "resizable": true,
         "fullscreen": false,
-        "minWidth": 800,
-        "minHeight": 600
+        "minWidth": 900,
+        "minHeight": 600,
+        "center": true,
+        "visible": true,
+        "decorations": true,
+        "alwaysOnTop": false
       }
     ],
+    "trayIcon": {
+      "iconPath": "icons/icon.png",
+      "iconAsTemplate": true,
+      "tooltip": "Duple"
+    },
     "security": {
       "csp": null
     }
@@ -30,6 +39,9 @@
       "preload": {
         "db": "sqlite:duple.db"
       }
+    },
+    "notification": {
+      "all": true
     }
   }
 }

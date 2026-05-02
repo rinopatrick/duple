@@ -66,6 +66,10 @@ export function toggleSidebar() {
 let _theme: 'light' | 'dark' = $state('light');
 let _features: Record<string, boolean> = $state({ siklus: true });
 
+export function isDesktop(): boolean {
+  return typeof window !== 'undefined' && '__TAURI_INTERNALS__' in (window as any);
+}
+
 export function getFeature(key: string): boolean {
   return _features[key] ?? true;
 }

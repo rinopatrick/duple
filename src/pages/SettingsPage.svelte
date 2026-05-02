@@ -1,6 +1,6 @@
 <script lang="ts">
   import { getSetting, setSetting } from '../lib/db/settings';
-  import { getTheme, setTheme, getFeature, setFeature, loadFeatures } from '../lib/stores/app.svelte';
+  import { getTheme, setTheme, getFeature, setFeature, loadFeatures, isDesktop } from '../lib/stores/app.svelte';
   import { setLocale, getLocale, tr, type Locale } from '../lib/i18n';
   import { initSync, pushAllToCloud, isSyncEnabled, checkSyncStatus, signInWithOAuth, signOut, getSession } from '../lib/sync/supabase';
   import { getAllMakanan, getAllLogMakanan, getAllSiklus, getAllMoodLogs, getAllRencana, getAllMomen, getAllWishlist, getAllUkuran, getAllTriggerWords, getAllOrang } from '../lib/db';
@@ -250,7 +250,7 @@
       <div class="stats shadow mt-3">
         <div class="stat">
           <div class="stat-title">{tr().settings.mode}</div>
-          <div class="stat-value text-sm font-mono">{typeof window !== 'undefined' && '__TAURI_INTERNALS__' in (window as any) ? tr().settings.modeDesktop : tr().settings.modeBrowser}</div>
+           <div class="stat-value text-sm font-mono">{isDesktop() ? tr().settings.modeDesktop : tr().settings.modeBrowser}</div>
         </div>
       </div>
     </div>

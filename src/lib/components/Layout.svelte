@@ -21,9 +21,14 @@
   import LLMPage from '../../pages/LLMPage.svelte';
   import SettingsPage from '../../pages/SettingsPage.svelte';
   import { getRoute, getSidebarOpen, toggleSidebar } from '../stores/app.svelte';
+  import { sendDesktopNotifications } from '../engine/reminders';
 
   const route = $derived(getRoute());
   const sidebarOpen = $derived(getSidebarOpen());
+
+  $effect(() => {
+    sendDesktopNotifications();
+  });
 </script>
 
 <div class="flex h-screen overflow-hidden bg-base-200">
