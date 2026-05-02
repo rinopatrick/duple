@@ -33,13 +33,7 @@
       "csp": null
     }
   },
-  "plugins": {
-    "sql": {
-      "preload": {
-        "db": "sqlite:duple.db"
-      }
-    }
-  },
+  "plugins": {},
   "bundle": {
     "active": true,
     "targets": "all",
