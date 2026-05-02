@@ -59,7 +59,7 @@
     >
       <span class="flex items-center gap-2.5 text-xs font-medium uppercase tracking-wider">
         <MoreHorizontal class="w-4 h-4" />
-        More
+        {tr().common.more}
       </span>
       <ChevronDown class="w-3.5 h-3.5 transition-transform duration-150" style="transform: {showMore ? 'rotate(0deg)' : 'rotate(-90deg)'}" />
     </button>

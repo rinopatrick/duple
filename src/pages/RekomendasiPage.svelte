@@ -14,7 +14,7 @@
     try {
       result = await generateRekomendasi();
     } catch (e) {
-      error = 'Gagal generate rekomendasi: ' + String(e);
+      error = tr().common.loading + ': ' + String(e);
     }
     loading = false;
   }
@@ -59,7 +59,7 @@
               </div>
               <div class="stat">
                 <div class="stat-title">{tr().rekomendasi.todayMood}</div>
-                <div class="stat-value text-lg">{MOOD_EMOJI[result.mood_hari_ini] || ''} {result.mood_hari_ini}</div>
+                <div class="stat-value text-lg">{MOOD_EMOJI[result.mood_hari_ini] || ''} {(tr().makanan.moods as any)[result.mood_hari_ini] || result.mood_hari_ini}</div>
               </div>
             </div>
             <div class="alert" class:alert-info={result.fase === 'normal'}

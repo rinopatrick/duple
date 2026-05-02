@@ -154,7 +154,7 @@
                   <ExternalLink class="w-3 h-3" /> Maps
                 </a>
                 <a href={getDirectionsUrl(item)} target="_blank" rel="noopener" class="btn btn-xs btn-ghost" title={tr().rencana.directions}>
-                  <Navigation class="w-3 h-3" /> Arah
+                  <Navigation class="w-3 h-3" /> {tr().rencana.directions.split(' ')[0]}
                 </a>
               </div>
               <div class="flex gap-1">

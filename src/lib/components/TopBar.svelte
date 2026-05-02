@@ -1,6 +1,6 @@
 <script lang="ts">
   import { toggleSidebar, toggleTheme, getTheme } from '../stores/app.svelte';
-  import { getLocale, setLocale, type Locale } from '../i18n/index.svelte';
+  import { getLocale, setLocale, tr, type Locale } from '../i18n/index.svelte';
   import { Moon, Sun, PanelLeft, Globe, Search, X } from 'lucide-svelte';
 
   const theme = $derived(getTheme());
@@ -40,7 +40,7 @@
         <Search class="w-3.5 h-3.5 absolute left-2" style="color: var(--text-muted)" />
         <input type="text" class="w-48 text-sm py-1 pl-7 pr-6 rounded-md border outline-none"
                style="background: var(--bg); border-color: var(--border); color: var(--text)"
-               bind:value={query} placeholder="Search pages..." autofocus
+               bind:value={query} placeholder={tr().common.search} autofocus
                onkeydown={(e: KeyboardEvent) => { if (e.key === 'Escape') { searchOpen = false; query = ''; } }} />
         <button onclick={() => { searchOpen = false; query = ''; }} class="btn btn-ghost btn-xs btn-square"><X class="w-3 h-3" /></button>
         {#if results.length > 0}
@@ -57,7 +57,7 @@
     {:else}
       <button onclick={() => searchOpen = true} class="btn btn-ghost btn-sm hidden md:flex items-center gap-2 text-xs" style="color: var(--text-muted)">
         <Search class="w-3.5 h-3.5" />
-        <span>Search...</span>
+        <span>{tr().common.search}</span>
       </button>
     {/if}
   </div>

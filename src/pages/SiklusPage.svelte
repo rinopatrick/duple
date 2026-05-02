@@ -109,12 +109,12 @@
     const todayRec = haidData[t];
 
     if (todayRec?.status === 'haid') {
-      return `${tr().siklus.activeToday} Flow: ${'🔴'.repeat(todayRec.flow_level || 3)}${'⚪'.repeat(5 - (todayRec.flow_level || 3))}`;
+      return `${tr().siklus.activeToday} ${'🔴'.repeat(todayRec.flow_level || 3)}${'⚪'.repeat(5 - (todayRec.flow_level || 3))}`;
     }
 
     const latest = haids[haids.length - 1];
     const daysSince = dayjs(t).diff(dayjs(latest.tanggal), 'day') + 1;
-    return `${tr().siklus.activeDay.replace('{n}', String(daysSince))} (${formatDate(latest.tanggal, 'DD MMM')}). Flow: ${'🔴'.repeat(latest.flow_level || 3)}`;
+    return `${tr().siklus.activeDay.replace('{n}', String(daysSince))} (${formatDate(latest.tanggal, 'DD MMM')})`;
   }
 
 </script>

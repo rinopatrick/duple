@@ -66,19 +66,21 @@
   };
 
   function prediksiSiklus(): string {
-    if (lastSiklus.length < 2) return 'Belum cukup data';
+    const t = tr();
+    if (lastSiklus.length < 2) return t.dashboard.notEnough;
     const cycles: number[] = [];
     for (let i = 0; i < lastSiklus.length - 1; i++) {
       const d = dayjs(lastSiklus[i].tgl_mulai).diff(dayjs(lastSiklus[i + 1].tgl_mulai), 'day');
       if (d > 0) cycles.push(d);
     }
+    if (cycles.length < 1) return t.dashboard.notEnough;
     const avg = Math.round(cycles.reduce((a, b) => a + b, 0) / cycles.length);
     const lastStart = dayjs(lastSiklus[0].tgl_mulai);
     const next = lastStart.add(avg, 'day');
     const daysLeft = next.diff(dayjs(), 'day');
-    if (daysLeft < 0) return 'Sedang/sudah lewat';
-    if (daysLeft === 0) return 'Hari ini';
-    return `${daysLeft} hari lagi (${next.format('DD MMM')})`;
+    if (daysLeft < 0) return t.siklus.today;
+    if (daysLeft === 0) return t.dashboard.today;
+    return `${daysLeft} ${t.dashboard.daysAway} (${next.format('DD MMM')})`;
   }
 </script>
 
@@ -194,7 +196,7 @@
             <h2 class="card-title">😊 {tr().dashboard.todayMood}</h2>
             {#if moodToday}
               <p class="text-3xl text-center">{MOOD_EMOJI[moodToday.mood] || '😐'}</p>
-              <p class="text-center font-medium capitalize">{moodToday.mood}</p>
+              <p class="text-center font-medium capitalize">{(tr().makanan.moods as any)[moodToday.mood] || moodToday.mood}</p>
               {#if moodToday.trigger_penyebab}
                 <p class="text-xs text-base-content/50">{tr().dashboard.triggerPrefix}{moodToday.trigger_penyebab}</p>
               {/if}
