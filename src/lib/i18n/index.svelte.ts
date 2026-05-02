@@ -695,6 +695,7 @@ export function t(): Translations { return tr(); }
 
 export function setLocale(l: Locale) {
   _current = l;
+  console.log('[i18n] setLocale:', l);
   if (typeof localStorage !== 'undefined') localStorage.setItem('duple_locale', l);
   if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('duple-locale-changed', { detail: l }));
 }
