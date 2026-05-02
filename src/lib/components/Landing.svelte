@@ -1,8 +1,9 @@
 <script lang="ts">
-  import { UtensilsCrossed, Calendar, Lightbulb, Lock } from 'lucide-svelte';
+  import { UtensilsCrossed, Calendar, Lightbulb, Lock, Download } from 'lucide-svelte';
   import { tr } from '../i18n/index.svelte';
 
   let { onStart }: { onStart: () => void } = $props();
+  const RELEASE_URL = 'https://github.com/rinopatrick/duple/releases/latest';
 </script>
 
 <div class="min-h-screen flex flex-col items-center justify-center p-6 text-center" style="background: var(--bg)">
@@ -58,6 +59,9 @@
       <button onclick={onStart} class="btn btn-primary btn-lg w-full" style="font-size:1.125rem; padding: 1rem 2rem;">
         {tr().landing.start}
       </button>
+      <a href={RELEASE_URL} target="_blank" rel="noopener" class="btn btn-outline btn-sm w-full gap-2">
+        <Download class="w-4 h-4" /> Download Desktop App (Windows/Mac/Linux)
+      </a>
       <p class="text-xs" style="color: var(--text-soft)">{tr().landing.sub}</p>
     </div>
   </div>
