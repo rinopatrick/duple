@@ -27,7 +27,9 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm install -g @tauri-apps/cli@^2
-      - run: cd src-tauri; cargo tauri build
+      - name: Build Tauri
+        run: cargo tauri build
+        working-directory: src-tauri
       - uses: softprops/action-gh-release@v2
         with:
           files: src-tauri/target/release/bundle/msi/*.msi,src-tauri/target/release/bundle/nsis/*.exe
