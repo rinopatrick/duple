@@ -48,6 +48,8 @@ class DexieDatabase {
     console.log('🗄️ Browser mode: using IndexedDB (data persists across sessions)');
   }
 
+  get native() { return this.dexie; }
+
   async select<T>(sql: string, params: any[] = []): Promise<T[]> {
     const upper = sql.toUpperCase().trim();
     const table = this.extractTable(sql);
@@ -270,4 +272,37 @@ export async function insert(sql: string, params: any[] = []): Promise<number> {
   const database = await getDb();
   const result = await database.execute(sql, params);
   return result.lastInsertId as number;
+}
+
+export async function clearTable(table: string): Promise<void> {
+  await execute(`DELETE FROM ${table}`);
+}
+
+export async function importTable(tableName: string, rows: any[]): Promise<void> {
+  const database = await getDb();
+
+  if (isTauri) {
+    await database.execute(`DELETE FROM ${tableName}`, []);
+    const now = new Date().toISOString();
+    for (const row of rows) {
+      const { id, created_at, updated_at, ...data } = row;
+      const keys = Object.keys(data);
+      const values = Object.values(data);
+      const placeholders = keys.map(() => '?').join(', ');
+      await database.execute(
+        `INSERT INTO ${tableName} (${keys.join(', ')}, created_at) VALUES (${placeholders}, ?)`,
+        [...values, created_at || now]
+      );
+    }
+  } else {
+    const dexie = database.native;
+    await dexie.table(tableName).clear();
+    const now = new Date().toISOString();
+    const cleanRows = rows.map(({ id, ...rest }: any) => ({
+      ...rest,
+      created_at: rest.created_at || now,
+      updated_at: rest.updated_at || now,
+    }));
+    await dexie.table(tableName).bulkAdd(cleanRows);
+  }
 }

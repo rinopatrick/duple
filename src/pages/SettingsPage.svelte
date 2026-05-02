@@ -4,6 +4,7 @@
   import { setLocale, getLocale, tr, type Locale } from '../lib/i18n';
   import { initSync, pushAllToCloud, isSyncEnabled, checkSyncStatus, signInWithOAuth, signOut, getSession } from '../lib/sync/supabase';
   import { getAllMakanan, getAllLogMakanan, getAllSiklus, getAllMoodLogs, getAllRencana, getAllMomen, getAllWishlist, getAllUkuran, getAllTriggerWords, getAllOrang } from '../lib/db';
+  import { importTable } from '../lib/db/core';
   import { Sun, Moon, Database, Cloud, Upload, Download, Check, LogIn, LogOut } from 'lucide-svelte';
 
   let locale = $derived(getLocale());
@@ -105,9 +106,33 @@
         const file = e.target.files[0];
         const text = await file.text();
         const backup = JSON.parse(text);
-        syncStatus = tr().settings.importOk;
+        if (!backup.data) throw new Error('Invalid backup format');
+
+        const tables: Record<string, string> = {
+          makanan_favorit: 'makanan_favorit',
+          log_makanan: 'log_makanan',
+          siklus_haid: 'siklus_haid',
+          mood_log: 'mood_log',
+          rencana_tempat: 'rencana_tempat',
+          momen: 'momen',
+          wishlist_hadiah: 'wishlist_hadiah',
+          ukuran_pasangan: 'ukuran_pasangan',
+          trigger_words: 'trigger_words',
+          orang_penting: 'orang_penting',
+        };
+
+        let imported = 0;
+        for (const [key, tableName] of Object.entries(tables)) {
+          const rows = backup.data[key];
+          if (rows && rows.length > 0) {
+            await importTable(tableName, rows);
+            imported += rows.length;
+          }
+        }
+
+        syncStatus = `✅ Imported ${imported} records from backup`;
       } catch (ex) {
-        syncStatus = tr().settings.importFail;
+        syncStatus = `❌ Import failed: ${String(ex)}`;
       }
       importing = false;
     };
