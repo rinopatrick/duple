@@ -6,7 +6,7 @@
   import { getAllMakanan, getAllLogMakanan, getAllSiklus, getAllMoodLogs, getAllRencana, getAllMomen, getAllWishlist, getAllUkuran, getAllTriggerWords, getAllOrang } from '../lib/db';
   import { importTable } from '../lib/db/core';
   import { isPinEnabled, setPin, removePin } from '../lib/stores/pin.svelte';
-  import { Sun, Moon, Database, Cloud, Upload, Download, Check, LogIn, LogOut, Lock, Unlock } from 'lucide-svelte';
+  import { Sun, Moon, Database, Cloud, Upload, Download, Check, LogIn, LogOut, Lock, Unlock, Heart } from 'lucide-svelte';
 
   let locale = $derived(getLocale());
   let theme = $derived(getTheme());
@@ -327,6 +327,20 @@
         <p>{tr().app.tagline}</p>
         <p class="text-base-content/50">🦀 Tauri + ⚡ Svelte + 🎨 TailwindCSS + ☁️ Supabase</p>
       </div>
+    </div>
+  </div>
+
+  <div class="card bg-primary/10 shadow">
+    <div class="card-body text-center">
+      <Heart class="w-6 h-6 mx-auto text-primary" />
+      <h2 class="card-title justify-center text-sm">Support Duple</h2>
+      <p class="text-xs text-base-content/60">Duple is free & open source forever. If it helps your relationship, consider buying me a coffee.</p>
+      <a href="https://ko-fi.com/YOUR_USERNAME" target="_blank" rel="noopener" class="btn btn-primary btn-sm w-full">
+        ☕ Buy me a coffee
+      </a>
+      <p class="text-xs text-base-content/40">
+        ⭐ <a href="https://github.com/rinopatrick/duple" target="_blank" rel="noopener" class="link">Star on GitHub</a> also helps a lot!
+      </p>
     </div>
   </div>
 </div>
