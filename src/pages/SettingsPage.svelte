@@ -6,7 +6,7 @@
   import { getAllMakanan, getAllLogMakanan, getAllSiklus, getAllMoodLogs, getAllRencana, getAllMomen, getAllWishlist, getAllUkuran, getAllTriggerWords, getAllOrang } from '../lib/db';
   import { importTable } from '../lib/db/core';
   import { isPinEnabled, setPin, removePin } from '../lib/stores/pin.svelte';
-  import { Sun, Moon, Database, Cloud, Upload, Download, Check, LogIn, LogOut, Lock, Unlock, Heart } from 'lucide-svelte';
+  import { Sun, Moon, Database, Cloud, Upload, Download, Check, LogIn, LogOut, Lock, Unlock, Heart, Monitor } from 'lucide-svelte';
 
   let locale = $derived(getLocale());
   let theme = $derived(getTheme());
@@ -327,6 +327,17 @@
         <p>{tr().app.tagline}</p>
         <p class="text-base-content/50">🦀 Tauri + ⚡ Svelte + 🎨 TailwindCSS + ☁️ Supabase</p>
       </div>
+    </div>
+  </div>
+
+  <div class="card bg-base-100 shadow">
+    <div class="card-body text-center">
+      <Monitor class="w-6 h-6 mx-auto" style="color: var(--primary)" />
+      <h2 class="card-title justify-center text-sm">Desktop App</h2>
+      <p class="text-xs text-base-content/60">Download the native app for Windows, Mac, or Linux. All data stays on your device.</p>
+      <a href="https://github.com/rinopatrick/duple/releases/latest" target="_blank" rel="noopener" class="btn btn-primary btn-sm w-full gap-2">
+        <Download class="w-4 h-4" /> Download (.exe / .dmg / .AppImage)
+      </a>
     </div>
   </div>
 
