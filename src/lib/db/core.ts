@@ -233,8 +233,13 @@ class DexieDatabase {
 export async function getDb(): Promise<any> {
   if (!db) {
     if (isTauri) {
-      db = await Database.load('sqlite:duple.db');
-      await initSchema(db);
+      try {
+        db = await Database.load('sqlite:duple.db');
+        await initSchema(db);
+      } catch (e) {
+        console.error('Tauri SQLite failed, falling back to IndexedDB:', e);
+        db = new DexieDatabase();
+      }
     } else {
       db = new DexieDatabase();
     }
