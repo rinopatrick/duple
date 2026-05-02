@@ -275,7 +275,23 @@
       <div class="stats shadow mt-3">
         <div class="stat">
           <div class="stat-title">{tr().settings.mode}</div>
-           <div class="stat-value text-sm font-mono">{isDesktop() ? tr().settings.modeDesktop : tr().settings.modeBrowser}</div>
+          <div class="stat-value text-sm font-mono">{isDesktop() ? tr().settings.modeDesktop : tr().settings.modeBrowser}</div>
+        </div>
+      </div>
+
+      <div class="divider text-xs text-base-content/50 mt-3 mb-1">Sync Guide</div>
+      <div class="space-y-2 text-sm">
+        <div class="flex gap-2">
+          <span class="badge badge-primary badge-sm mt-0.5">A</span>
+          <span>Supabase Sync: Setup URL + anon key above → <strong>Save & Connect</strong> → <strong>Sync Now</strong>. Data uploads/downloads automatically.</span>
+        </div>
+        <div class="flex gap-2">
+          <span class="badge badge-secondary badge-sm mt-0.5">B</span>
+          <span>Manual: <strong>Export Backup</strong> (saves .json) → transfer file → <strong>Import Backup</strong> on other device.</span>
+        </div>
+        <div class="flex gap-2">
+          <span class="badge badge-accent badge-sm mt-0.5">💡</span>
+          <span>Desktop ↔ Web: Export from one, import on the other. Or use <strong>same</strong> Supabase project on both devices.</span>
         </div>
       </div>
     </div>
