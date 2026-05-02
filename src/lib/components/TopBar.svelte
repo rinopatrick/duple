@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { toggleSidebar, toggleTheme, getTheme } from '../stores/app.svelte';
+  import { toggleSidebar, toggleTheme, getTheme, setRoute, NAV_MAIN, NAV_MORE, getFeature } from '../stores/app.svelte';
   import { getLocale, setLocale, tr, type Locale } from '../i18n/index.svelte';
-  import { Moon, Sun, PanelLeft, Globe, Search, X } from 'lucide-svelte';
+  import { Moon, Sun, PanelLeft, Globe, Search, X, Download, Heart } from 'lucide-svelte';
 
   const theme = $derived(getTheme());
   let locale = $derived(getLocale());
@@ -62,6 +62,12 @@
     {/if}
   </div>
   <div class="flex items-center gap-1">
+    <a href="https://github.com/rinopatrick/duple/releases/latest" target="_blank" rel="noopener" class="btn btn-ghost btn-sm btn-square" title="Download Desktop App">
+      <Download class="w-4 h-4" />
+    </a>
+    <a href="https://saweria.co/rinopatrick" target="_blank" rel="noopener" class="btn btn-ghost btn-sm btn-square text-warning/70" title="Support Duple">
+      <Heart class="w-4 h-4" />
+    </a>
     <button onclick={cycleLang} class="btn btn-ghost btn-sm flex items-center gap-1" title="Cycle language">
       <Globe class="w-3.5 h-3.5" />
       <span class="text-xs font-medium">{LANG_LABELS[locale]}</span>
