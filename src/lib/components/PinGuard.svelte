@@ -41,7 +41,7 @@
   }
 </script>
 
-<div class="min-h-screen flex items-center justify-center" style="background: var(--bg)">
+<div role="dialog" aria-modal="true" aria-label="PIN lock" class="min-h-screen flex items-center justify-center" style="background: var(--bg)">
   <div class="w-80 space-y-6 text-center">
     <div class="space-y-2">
       <div class="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center" style="background: var(--primary)">
@@ -52,7 +52,7 @@
         {/if}
       </div>
       <h1 class="text-xl font-bold" style="color: var(--text)">Duple</h1>
-      <p class="text-sm" style="color: var(--text-muted)">
+      <p id="pin-instructions" class="text-sm" style="color: var(--text-muted)">
         {#if mode === 'set' && !confirmPin}
           Set a 4-digit PIN to protect your data
         {:else if mode === 'set' && confirmPin}
@@ -74,6 +74,8 @@
         onkeydown={handleKeydown}
         placeholder="****"
         autofocus
+        aria-describedby="pin-instructions"
+        tabindex="0"
       />
       {#if error}
         <p class="text-error text-sm">{error}</p>

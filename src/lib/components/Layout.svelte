@@ -55,7 +55,7 @@
 
   {#if sidebarOpen}
     <div class="lg:hidden fixed inset-0 z-40 flex">
-      <div class="absolute inset-0 bg-black/40" onclick={toggleSidebar}></div>
+      <div class="absolute inset-0 bg-black/40" onclick={toggleSidebar} tabindex="0" onkeydown={(e) => e.key === 'Escape' && toggleSidebar()}></div>
       <div class="relative z-50">
         <Sidebar />
       </div>
@@ -63,8 +63,8 @@
   {/if}
 
   <div class="flex flex-col flex-1 overflow-hidden">
-    <TopBar />
-    <main class="flex-1 overflow-y-auto p-3 md:p-4 lg:p-6">
+    <div role="banner"><TopBar /></div>
+    <main role="main" class="flex-1 overflow-y-auto p-3 md:p-4 lg:p-6">
       <div style="animation: fadeSlideIn 0.2s ease-out">
         {#if pageError}
           <div class="alert alert-error">{pageError}</div>

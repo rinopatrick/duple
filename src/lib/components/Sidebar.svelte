@@ -25,7 +25,7 @@
   function navigate(route: Route) { setRoute(route); }
 </script>
 
-<aside class="w-56 border-r flex flex-col h-full text-sm" style="background: var(--bg-card); border-color: var(--border)">
+<aside role="navigation" aria-label="Main navigation" class="w-56 border-r flex flex-col h-full text-sm" style="background: var(--bg-card); border-color: var(--border)">
   <div class="p-3.5 border-b" style="border-color: var(--border)">
     <div class="flex items-center gap-2.5">
       <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background: var(--primary)">
@@ -54,6 +54,8 @@
 
     <button
       onclick={() => showMore = !showMore}
+      role="button"
+      aria-expanded={showMore}
       class="w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all hover:bg-primary/10"
       style="color: var(--text-muted)"
     >

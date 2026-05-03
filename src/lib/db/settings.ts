@@ -1,7 +1,7 @@
 import { queryAll, execute } from './core';
 import { encryptValue, decryptValue } from '../utils/crypto';
 
-const ENCRYPTED_KEYS = ['supabase_key'];
+const ENCRYPTED_KEYS = ['supabase_key', 'llm_api_key', 'openai_key', 'anthropic_key', 'google_key', 'groq_key', 'openrouter_key'];
 
 export interface Setting {
   key: string;

@@ -23,10 +23,10 @@
 
 {#if show}
   <button class="fixed inset-0 bg-black/50 z-50" onclick={onClose} aria-label="Close modal"></button>
-  <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-80 p-6 rounded-2xl shadow-2xl space-y-4" style="background: var(--bg-card)">
+  <div role="dialog" aria-modal="true" aria-label="Install Duple" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-80 p-6 rounded-2xl shadow-2xl space-y-4" style="background: var(--bg-card)">
     <div class="flex items-center justify-between">
       <h3 class="font-bold text-lg">Install Duple</h3>
-      <button onclick={onClose} class="btn btn-ghost btn-xs btn-square"><X class="w-4 h-4" /></button>
+      <button onclick={onClose} aria-label="Close" class="btn btn-ghost btn-xs btn-square"><X class="w-4 h-4" /></button>
     </div>
     <p class="text-sm text-base-content/60">No download needed. One-click install from browser:</p>
     <button onclick={installPWA} class="btn btn-primary btn-sm w-full justify-start gap-3">
