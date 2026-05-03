@@ -70,16 +70,16 @@
     syncStatus = 'Signed out';
   }
 
-  function handleSetPin() {
+  async function handleSetPin() {
     if (newPin.length >= 4) {
-      setPin(newPin);
+      await setPin(newPin);
       pinEnabled = true;
       newPin = '';
     }
   }
 
-  function handleRemovePin() {
-    removePin();
+  async function handleRemovePin() {
+    await removePin();
     pinEnabled = false;
     newPin = '';
   }
@@ -261,7 +261,15 @@
               <button onclick={handleLogout} class="btn btn-ghost btn-xs text-error">
                 <LogOut class="w-3.5 h-3.5" /> {tr().settings.signOut}
               </button>
-        </div>
+            </div>
+          {:else}
+            <button onclick={handleLogin} class="btn btn-outline btn-sm w-full gap-2">
+              <LogIn class="w-4 h-4" /> {tr().settings.oauthLogin}
+            </button>
+            <p class="text-xs text-base-content/50 mt-1">{tr().settings.oauthDesc}</p>
+          {/if}
+        {/if}
+
         <div class="flex items-center justify-between mt-3">
           <div>
             <p class="font-medium">🔐 App Lock (PIN)</p>
@@ -282,13 +290,6 @@
             </div>
           {/if}
         </div>
-          {:else}
-            <button onclick={handleLogin} class="btn btn-outline btn-sm w-full gap-2">
-              <LogIn class="w-4 h-4" /> {tr().settings.oauthLogin}
-            </button>
-            <p class="text-xs text-base-content/50 mt-1">{tr().settings.oauthDesc}</p>
-          {/if}
-        {/if}
       </div>
     </div>
   </div>

@@ -1,4 +1,7 @@
 import { queryAll, execute } from './core';
+import { encryptValue, decryptValue } from '../utils/crypto';
+
+const ENCRYPTED_KEYS = ['supabase_key'];
 
 export interface Setting {
   key: string;
@@ -8,10 +11,22 @@ export interface Setting {
 
 export async function getSetting(key: string): Promise<string | null> {
   const results = await queryAll<Setting>('SELECT * FROM settings WHERE key = ?', [key]);
-  return results.length > 0 ? results[0].value : null;
+  if (results.length === 0) return null;
+  let value = results[0].value;
+  if (ENCRYPTED_KEYS.includes(key) && value.startsWith('enc:')) {
+    try {
+      value = await decryptValue(value.slice(4));
+    } catch {
+      return null;
+    }
+  }
+  return value;
 }
 
 export async function setSetting(key: string, value: string) {
+  if (ENCRYPTED_KEYS.includes(key) && value) {
+    value = 'enc:' + await encryptValue(value);
+  }
   return execute(
     'INSERT OR REPLACE INTO settings (key, value, updated_at) VALUES (?, ?, datetime("now","localtime"))',
     [key, value]

@@ -85,7 +85,7 @@
 <DownloadModal show={showDownload} onClose={() => showDownload = false} />
 
 {#if showSupport}
-  <button class="fixed inset-0 z-40" onclick={() => showSupport = false}></button>
+  <button class="fixed inset-0 z-40" onclick={() => showSupport = false} aria-label="Close support menu"></button>
   <div class="fixed top-12 right-4 z-50 w-48 p-3 rounded-xl shadow-xl border space-y-2" style="background: var(--bg-card); border-color: var(--border)">
     <p class="text-xs font-medium" style="color: var(--text)">Support Duple 💙</p>
     <a href="https://ko-fi.com/rinopatrick" target="_blank" rel="noopener" class="btn btn-ghost btn-xs w-full justify-start text-xs">☕ Ko-fi</a>

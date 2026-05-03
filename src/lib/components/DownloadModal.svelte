@@ -22,7 +22,7 @@
 </script>
 
 {#if show}
-  <button class="fixed inset-0 bg-black/50 z-50" onclick={onClose}></button>
+  <button class="fixed inset-0 bg-black/50 z-50" onclick={onClose} aria-label="Close modal"></button>
   <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-80 p-6 rounded-2xl shadow-2xl space-y-4" style="background: var(--bg-card)">
     <div class="flex items-center justify-between">
       <h3 class="font-bold text-lg">Install Duple</h3>

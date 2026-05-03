@@ -143,10 +143,10 @@ describe('PIN: Security module', () => {
     const { setPin, getPin, verifyPin, removePin, hasPin } = await import('../lib/stores/pin.svelte');
     const testPin = '1234';
 
-    setPin(testPin);
+    await setPin(testPin);
     expect(hasPin()).toBe(true);
-    expect(verifyPin(testPin)).toBe(true);
-    expect(verifyPin('0000')).toBe(false);
+    expect(await verifyPin(testPin)).toBe(true);
+    expect(await verifyPin('0000')).toBe(false);
 
     removePin();
     expect(hasPin()).toBe(false);

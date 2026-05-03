@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Lock, ShieldCheck } from 'lucide-svelte';
   import { tr } from '../i18n/index.svelte';
-  import { getPin, setPin, removePin } from '../stores/pin.svelte';
+  import { getPin, setPin, removePin, verifyPin } from '../stores/pin.svelte';
 
   let { onUnlock }: { onUnlock: () => void } = $props();
   let pin = $state('');
@@ -9,15 +9,15 @@
   let mode: 'enter' | 'set' = $state(getPin() ? 'enter' : 'set');
   let confirmPin = $state('');
 
-  function handleSubmit() {
+  async function handleSubmit() {
     if (mode === 'set') {
       if (pin.length < 4) { error = 'Min 4 digits'; return; }
       if (confirmPin && pin !== confirmPin) { error = 'PIN mismatch'; return; }
       if (!confirmPin) { confirmPin = pin; pin = ''; return; }
-      setPin(pin);
+      await setPin(pin);
       error = '';
     } else {
-      if (pin === getPin()) {
+      if (await verifyPin(pin)) {
         onUnlock();
       } else {
         error = 'Wrong PIN';

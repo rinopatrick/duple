@@ -78,7 +78,7 @@
             <Heart class="w-3.5 h-3.5" /> Support Us
           </button>
           {#if showSupport}
-            <button class="fixed inset-0 z-40" onclick={() => showSupport = false}></button>
+            <button class="fixed inset-0 z-40" onclick={() => showSupport = false} aria-label="Close support menu"></button>
             <div class="absolute bottom-full left-0 mb-2 w-full p-3 rounded-xl shadow-xl border space-y-2 z-50" style="background: var(--bg-card); border-color: var(--border)">
               <p class="text-xs font-medium text-center" style="color: var(--text)">Support Duple 💙</p>
               <a href="https://ko-fi.com/rinopatrick" target="_blank" rel="noopener" class="btn btn-ghost btn-xs w-full justify-start text-xs" onclick={() => showSupport = false}>☕ Ko-fi</a>
