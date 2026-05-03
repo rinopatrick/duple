@@ -55,7 +55,7 @@
 
   {#if sidebarOpen}
     <div class="lg:hidden fixed inset-0 z-40 flex">
-      <div class="absolute inset-0 bg-black/40" onclick={toggleSidebar} tabindex="0" onkeydown={(e) => e.key === 'Escape' && toggleSidebar()}></div>
+      <div class="absolute inset-0 bg-black/40" onclick={toggleSidebar} role="button" tabindex="0" aria-label="Close sidebar" onkeydown={(e) => e.key === 'Escape' && toggleSidebar()}></div>
       <div class="relative z-50">
         <Sidebar />
       </div>
