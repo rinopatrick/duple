@@ -1,3 +1,5 @@
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/rinopatrick/duple/master/public/favicon.svg" width="80" alt="Duple" />
 </p>
@@ -135,3 +137,13 @@ Duple stores all data **locally on your device**. When using Supabase sync, you 
 ## License
 
 MIT © 2025 [rinopatrick](https://github.com/rinopatrick)
+
+## Production-readiness status
+
+Current state: **engineering sample / pre-production**.
+
+Recommended next steps:
+1. Add CI checks (tests + lint) on every push/PR
+2. Add release/versioning policy
+3. Add deployment/runtime hardening docs
+4. Add monitoring and operational runbook
